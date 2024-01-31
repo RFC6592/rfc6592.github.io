@@ -7,7 +7,7 @@ comments: true
 ---
 
 
-I attempted to find a straightforward way to bypass this EDR, avoiding more complex techniques such as Syshwipers3 or DLL unhooking. In this exploration, I focused on simplicity to navigate through the challenges posed by the Endpoint Detection and Response (EDR) system. Indeed, my primary goal was to gain a comprehensive understanding of the EDR, exploring its functionality and potential for creating one.
+I attempted to find a straightforward way to bypass this EDR, avoiding more complex techniques such as Syswhispers3 or DLL Unhooking. In this exploration, I focused on simplicity to navigate through the challenges posed by the Endpoint Detection and Response (EDR) system. Indeed, my primary goal was to gain a comprehensive understanding of the EDR, exploring its functionality and potential for creating one.
 
 ## What about The Remote Injector Agent ?
 
