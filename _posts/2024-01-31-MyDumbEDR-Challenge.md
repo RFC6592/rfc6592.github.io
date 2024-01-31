@@ -170,7 +170,7 @@ So we just need to obfuscate strings with *SeDebugPrivilege* and that's it.
 
 Upon attempting to execute the *ShellCode.exe* it seems that the Calculator application is not launching as expected. Feel free to contact me with any questions or comments. See you soon!
 
-If you want the code : 
+If you're interested in the code, you can find it on GitHub: 
 https://github.com/RFC6592/ChallengeDumbEDR
 
 ## Source 
