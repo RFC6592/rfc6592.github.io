@@ -281,8 +281,8 @@ https://www.virustotal.com/gui/file/31b263e9e0194fd7827a0a6adbb81cb8de7cb652995a
 
 ## Sources 
 
-* https://www.jstage.jst.go.jp/article/ipsjjip/25/0/25_866/_pdf
-* https://institute.sektor7.net/red-team-operator-malware-development-essentials
-* https://institute.sektor7.net/rto-maldev-intermediate
-* https://www.bordergate.co.uk/import-address-tables/
-* https://hadess.io/blog/
+* (2023 - jstage) https://www.jstage.jst.go.jp/article/ipsjjip/25/0/25_866/_pdf
+* (2023 - Sektor7) https://institute.sektor7.net/red-team-operator-malware-development-essentials
+* (2023 - Sektor7) https://institute.sektor7.net/rto-maldev-intermediate
+* (2023 - Bordergate) https://www.bordergate.co.uk/import-address-tables/
+* (2023 - Hadess) https://hadess.io/blog/

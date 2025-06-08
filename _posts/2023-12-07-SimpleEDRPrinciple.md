@@ -255,8 +255,10 @@ Instruction Hooking can overcome this drawback, it still leaves
 the path of trusted execution and jumps to an arbitrary code area. While Detours works in kernel-mode as well, the properties of Debugger aided Hooking and SIH (Single Instruction Hooking ) make them inappropriate for
 being useful within the kernel.
 
+
+
 ## Sources
-* https://www.jstage.jst.go.jp/article/ipsjjip/25/0/25_866/_pdf
-* https://securitytimes.medium.com/path-to-process-injection-bypass-userland-api-hooking-a8a49ae5def6
-* https://institute.sektor7.net/red-team-operator-malware-development-essentials
-* https://institute.sektor7.net/rto-maldev-intermediate
+* (2023 - jstage) https://www.jstage.jst.go.jp/article/ipsjjip/25/0/25_866/_pdf
+* (2023 - Medium) https://securitytimes.medium.com/path-to-process-injection-bypass-userland-api-hooking-a8a49ae5def6
+* (2023 - Sektor7) https://institute.sektor7.net/red-team-operator-malware-development-essentials
+* (2023 - Sektor7) https://institute.sektor7.net/rto-maldev-intermediate
