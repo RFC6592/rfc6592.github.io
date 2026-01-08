@@ -12,6 +12,6 @@ jobs:
                 -v /home/runner/work/rfc6592.github.io/rfc6592.github.io/_site:/srv/jekyll/_site \
                 -e PAGES_REPO_NWO=RFC6592/rfc6592.github.io \
                 jekyll/builder:latest \
-                /bin/bash -c "chmod -R 755 /srv/jekyll && bundle install && bundle exec jekyll build --future"
+                /bin/bash -c "chmod -R 777 /srv/jekyll && bundle install && bundle exec jekyll build --future"
 
 
