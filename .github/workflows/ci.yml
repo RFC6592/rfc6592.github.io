@@ -8,8 +8,10 @@ jobs:
       - name: Build the site in the jekyll/builder container
         run: |
           docker run \
-            -v ${{ github.workspace }}:/srv/jekyll \
-            -v ${{ github.workspace }}/_site:/srv/jekyll/_site \
-            -e PAGES_REPO_NWO=${{ github.repository }} \
-            jekyll/builder:4.3 \
-            /bin/bash -c "chmod -R 777 /srv/jekyll && bundle install && bundle exec jekyll build --future"
+                -v /home/runner/work/rfc6592.github.io/rfc6592.github.io:/srv/jekyll \
+                -v /home/runner/work/rfc6592.github.io/rfc6592.github.io/_site:/srv/jekyll/_site \
+                -e PAGES_REPO_NWO=RFC6592/rfc6592.github.io \
+                jekyll/builder:latest \
+                /bin/bash -c "chmod -R 755 /srv/jekyll && bundle install && bundle exec jekyll build --future"
+
+
