@@ -1127,23 +1127,56 @@ pre {
 }
 
 /* ── DIAGRAMS ───────────────────────────────────────────────── */
-.diagram{
-  margin:2.5rem 0;border:1px solid var(--border);
-  background:var(--bg2);overflow:hidden;
+/* ADD THIS to your existing CSS */
+
+.diagram-custom {
+  margin: 2.5rem 0;
+  border: 1px solid var(--border);
+  background: var(--bg2);
+  overflow-x: auto;     /* ← already there, good */
+  overflow-y: auto;     
+  white-space: nowrap;  /* ← KEY: prevents image from wrapping */
+  cursor: grab;
+  position: relative;
 }
-.diagram-custom{
-  margin:2.5rem 0;
-  border:1px solid var(--border);
-  background:var(--bg2);
-  overflow-x:auto;    
-  overflow-y:visible;
+
+.diagram-custom:active {
+  cursor: grabbing;
 }
-.diagram-title{
-  background:var(--bg3);border-bottom:1px solid var(--border);
-  padding:.55rem 1.2rem;font-size:.68rem;letter-spacing:2px;
-  color:var(--text-dim);text-transform:uppercase;
-  display:flex;align-items:center;gap:.55rem;
+
+.diagram-custom img {
+  display: block;
+  max-width: none;       /* ← allows image to be wider than container */
+  width: auto;           /* ← maintains original aspect ratio */
+  height: auto;          /* ← maintains original aspect ratio */
+  min-width: 100%;       /* ← ensures it fills container if smaller */
+  pointer-events: auto;  /* ← allows drag interaction */
+  user-select: none;     /* ← prevents accidental selection while dragging */
 }
-.diagram-title::before{content:'◆';color:var(--red);font-size:.55rem;}
-.diagram svg{display:block;width:100%;}
+
+/* Optional: Smooth scroll with momentum on supported browsers */
+.diagram-custom {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Optional: Custom scrollbar styling to match your dark theme */
+.diagram-custom::-webkit-scrollbar {
+  height: 8px;
+  background: var(--bg3);
+}
+
+.diagram-custom::-webkit-scrollbar-track {
+  background: var(--bg3);
+  border-radius: 4px;
+}
+
+.diagram-custom::-webkit-scrollbar-thumb {
+  background: var(--border2);
+  border-radius: 4px;
+}
+
+.diagram-custom::-webkit-scrollbar-thumb:hover {
+  background: var(--red);
+}
 
