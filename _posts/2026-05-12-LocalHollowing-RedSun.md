@@ -14,7 +14,7 @@ Posted on May 12, 2026
 
 # Bypass Native Malicious PE Static Detection with Local Hollowing
 
-## Context — What is RedSun (CVE-2026-33825)?
+## Context - What is RedSun (CVE-2026-33825)?
 
 During a penetration test engagement, I exploited **CVE-2026-33825**, also known as **RedSun** — a Local Privilege Escalation vulnerability affecting Microsoft Windows Defender's cloud file rollback mechanism.
 
@@ -32,7 +32,7 @@ The problem? **Dropping the raw RedSun.exe on disk is immediately flagged by Win
 
 ---
 
-## The Problem — Static PE Detection
+## The Problem - Static PE Detection
 
 Most Endpoint Detection & Response (EDR) and Antivirus (AV) solutions maintain a **signature database** that matches byte patterns in PE (Portable Executable) files on disk. When a known-malicious executable like RedSun is written to disk:
 
@@ -44,9 +44,12 @@ This is **static detection** — the file is flagged purely by its on-disk repre
 
 To successfully deliver the RedSun PoC, we need to ensure **no recognisable byte pattern of the original binary ever touches the disk in cleartext**.
 
+<img width="997" height="702" alt="image" src="https://github.com/user-attachments/assets/1c55a70a-193f-44be-9a8b-99a4d1b187d6" />
+
+
 ---
 
-## The Solution — Local Hollowing with AES Encryption
+## The Solution - Local Hollowing with AES Encryption
 
 **Local Process Hollowing** (also referred to as *self-injection* hollowing) is a technique where a process loads a secondary PE image into its own memory space — hollowing itself out and replacing its execution context with the injected payload — without ever writing the decrypted payload to disk.
 
