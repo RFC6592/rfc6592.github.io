@@ -5,6 +5,14 @@ layout: null
 @import url("pygment_highlights.css");
 
 /* --- General --- */
+:root {
+  --border: #dddddd;
+  --bg2: #f8f8f8;
+  --bg3: #eeeeee;
+  --border2: #cccccc;
+  --red: #c0392b;
+  --text-dim: #777777;
+}
 
 html {
   font-size: 100%
