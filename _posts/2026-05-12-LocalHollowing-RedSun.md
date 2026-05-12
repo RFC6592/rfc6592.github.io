@@ -276,7 +276,7 @@ The loader (`HarryPotter.exe`) was delivered to the target host. On execution:
 - From the SYSTEM shell, local password hashes were extracted using an obfuscated Mimikatz build, confirming full host compromise.
 
 
-<img width="1609" height="803" alt="image" src="https://github.com/user-attachments/assets/6810ba64-de8e-42e1-8d4c-43c42429efa9" />
+<img width="997" height="702" alt="image" src="https://github.com/user-attachments/assets/6810ba64-de8e-42e1-8d4c-43c42429efa9" />
 
 
 ---
