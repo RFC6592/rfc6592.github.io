@@ -1118,15 +1118,10 @@ pre {
 }
 
 
-.container {
-  max-width: 1300px !important;
-}
-
-.blog-post {
-  font-size: 1.2rem;
+.container-fluid {
+  max-width: 1400px;
 }
 
 .blog-post img {
   width: 100%;
-  border-radius: 8px;
 }
