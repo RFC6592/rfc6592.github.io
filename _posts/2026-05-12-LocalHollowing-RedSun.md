@@ -45,8 +45,10 @@ This is **static detection** - the file is flagged purely by its on-disk represe
 
 To successfully deliver the RedSun PoC, we need to ensure **no recognisable byte pattern of the original binary ever touches the disk in cleartext**.
 
-<img width="1189" height="846" alt="image" src="https://github.com/user-attachments/assets/d9185e02-ccba-4e82-b33a-5684915c1cac" />
-
+<div class="diagram">
+    <div class="diagram-title">Diagram 1 - Full Attack Overview: From Disk to SYSTEM Shell </div>
+    <img width="1189" height="846" alt="image" src="https://github.com/user-attachments/assets/d9185e02-ccba-4e82-b33a-5684915c1cac" />
+</div>
 
 
 ---
@@ -275,10 +277,10 @@ The loader (`HarryPotter.exe`) was delivered to the target host. On execution:
 - A new `conhost.exe` shell was spawned as **NT AUTHORITY\SYSTEM** (SID S-1-5-18).
 - From the SYSTEM shell, local password hashes were extracted using an obfuscated Mimikatz build, confirming full host compromise.
 
-
-<img width="1609" height="803" alt="image" src="https://github.com/user-attachments/assets/8327978b-0fec-49cd-9e03-8577ac9d94ad" />
-
-
+<div class="diagram-custom">
+  <div class="diagram-title">Diagram 2 — Result (PoC) </div>
+  <img width="1609" height="803" alt="image" src="https://rfc6592.github.io/assets/img/LocalHollowing-RedSun.png" />
+</div>
 
 ---
 
