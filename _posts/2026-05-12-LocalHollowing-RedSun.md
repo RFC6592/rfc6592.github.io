@@ -3,7 +3,7 @@ layout: post
 title: "Bypass Native Malicious PE Static Detection with Local Hollowing"
 subtitle: "There's lots to learn!"
 date: 2026-05-12
-full-width: true
+full-width: false
 tags: [CyberSec]
 ---
 
