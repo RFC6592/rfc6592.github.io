@@ -200,7 +200,7 @@ while (reloc->VirtualAddress) {
 }
 ```
 
-<img width="1386" height="781" alt="image" src="https://github.com/user-attachments/assets/893e2373-5a99-4351-82d5-39affb9e109f" />
+
 
 #### Step 6 - Resolve Imports
 
@@ -235,7 +235,7 @@ ResumeThread(mainThreadHandle);
 
 The main thread resumes execution at the RedSun entry point - fully mapped, fully resolved, entirely in memory.
 
-<img width="1388" height="679" alt="image" src="https://github.com/user-attachments/assets/55b9fdf3-1730-46e6-bb53-70dbe5e716e1" />
+
 
 
 ---
@@ -275,7 +275,9 @@ The loader (`HarryPotter.exe`) was delivered to the target host. On execution:
 - A new `conhost.exe` shell was spawned as **NT AUTHORITY\SYSTEM** (SID S-1-5-18).
 - From the SYSTEM shell, local password hashes were extracted using an obfuscated Mimikatz build, confirming full host compromise.
 
-![EICAR triggering Defender and spawning Admin cmd-line](./assets/redsun_evidence.png)
+
+<img width="1609" height="803" alt="image" src="https://github.com/user-attachments/assets/6810ba64-de8e-42e1-8d4c-43c42429efa9" />
+
 
 ---
 
