@@ -1127,15 +1127,15 @@ pre {
 }
 
 /* ── DIAGRAMS ───────────────────────────────────────────────── */
-/* ADD THIS to your existing CSS */
+/* ── DIAGRAM CUSTOM — HORIZONTAL SCROLL ───────────────────────────────────────────────── */
 
 .diagram-custom {
   margin: 2.5rem 0;
-  border: 1px solid var(--border);
-  background: var(--bg2);
-  overflow-x: auto;     /* ← already there, good */
-  overflow-y: auto;     
-  white-space: nowrap;  /* ← KEY: prevents image from wrapping */
+  border: 1px solid #dddddd;  /* fallback for --border */
+  background: #f8f8f8;        /* fallback for --bg2 */
+  overflow-x: auto;
+  overflow-y: auto;
+  white-space: nowrap;
   cursor: grab;
   position: relative;
 }
@@ -1146,37 +1146,54 @@ pre {
 
 .diagram-custom img {
   display: block;
-  max-width: none;       /* ← allows image to be wider than container */
-  width: auto;           /* ← maintains original aspect ratio */
-  height: auto;          /* ← maintains original aspect ratio */
-  min-width: 100%;       /* ← ensures it fills container if smaller */
-  pointer-events: auto;  /* ← allows drag interaction */
-  user-select: none;     /* ← prevents accidental selection while dragging */
+  max-width: none;
+  width: auto;
+  height: auto;
+  min-width: 100%;
+  pointer-events: auto;
+  user-select: none;
 }
 
-/* Optional: Smooth scroll with momentum on supported browsers */
 .diagram-custom {
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
 }
 
-/* Optional: Custom scrollbar styling to match your dark theme */
+/* Optional: Custom scrollbar */
 .diagram-custom::-webkit-scrollbar {
   height: 8px;
-  background: var(--bg3);
+  background: #e0e0e0;
 }
 
 .diagram-custom::-webkit-scrollbar-track {
-  background: var(--bg3);
+  background: #e0e0e0;
   border-radius: 4px;
 }
 
 .diagram-custom::-webkit-scrollbar-thumb {
-  background: var(--border2);
+  background: #aaaaaa;
   border-radius: 4px;
 }
 
 .diagram-custom::-webkit-scrollbar-thumb:hover {
-  background: var(--red);
+  background: #0085a1;  /* matches your theme's hover color */
 }
 
+.diagram-title {
+  background: #eeeeee;
+  border-bottom: 1px solid #dddddd;
+  padding: 0.55rem 1.2rem;
+  font-size: 0.68rem;
+  letter-spacing: 2px;
+  color: #777777;
+  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+}
+
+.diagram-title::before {
+  content: '◆';
+  color: #0085a1;  /* your theme's hover color */ 
+  font-size: 0.55rem;
+}
