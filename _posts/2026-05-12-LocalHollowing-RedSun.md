@@ -45,7 +45,7 @@ This is **static detection** - the file is flagged purely by its on-disk represe
 
 To successfully deliver the RedSun PoC, we need to ensure **no recognisable byte pattern of the original binary ever touches the disk in cleartext**.
 
-<img width="997" height="702" alt="image" src="https://github.com/user-attachments/assets/1c55a70a-193f-44be-9a8b-99a4d1b187d6" />
+<img alt="image" style="width:100%; height:auto;" src="https://github.com/user-attachments/assets/1c55a70a-193f-44be-9a8b-99a4d1b187d6" />
 
 
 ---
@@ -120,7 +120,7 @@ int main() {
 > **Why duplicate the pseudo-handle?**  
 > `GetCurrentThread()` returns a pseudo-handle - a constant value that is only meaningful within the calling thread itself. To pass the main thread handle to another thread (`Doit`) and suspend it from there, we need a **real, transferable handle**. `DuplicateHandle` achieves this.
 
-<img width="989" height="424" alt="image" src="https://github.com/user-attachments/assets/f00c413d-7789-48eb-a42c-d2cd1c295c78" />
+<img alt="image" style="width:100%; height:auto;" src="https://github.com/user-attachments/assets/f00c413d-7789-48eb-a42c-d2cd1c295c78" />
 
 
 ---
@@ -277,7 +277,7 @@ The loader (`HarryPotter.exe`) was delivered to the target host. On execution:
 - From the SYSTEM shell, local password hashes were extracted using an obfuscated Mimikatz build, confirming full host compromise.
 
 
-<img width="997" height="702" alt="image" src="https://github.com/user-attachments/assets/6810ba64-de8e-42e1-8d4c-43c42429efa9" />
+<img alt="image" style="width:100%; height:auto;" src="https://github.com/user-attachments/assets/6810ba64-de8e-42e1-8d4c-43c42429efa9" />
 
 
 ---
