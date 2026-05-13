@@ -1,13 +1,13 @@
 ---
 layout: post
-title: "Bypass Native Malicious PE Static Detection with Local Hollowing"
+title: "RedSun: Critical Windows Defender Exploit Leveraging LocalHollowing Obfuscation to Achieve Full System Control"
 subtitle: "There's lots to learn!"
 date: 2026-05-12
 full-width: false
 tags: [CyberSec]
 ---
 
-# Bypass Native Malicious PE Static Detection with Local Hollowing
+# RedSun: Critical Windows Defender Exploit Leveraging LocalHollowing Obfuscation to Achieve Full System Control
 
 ## There's lots to learn!
 
@@ -45,7 +45,7 @@ This is **static detection** - the file is flagged purely by its on-disk represe
 
 To successfully deliver the RedSun PoC, we need to ensure **no recognisable byte pattern of the original binary ever touches the disk in cleartext**.
 
-<div class="diagram">
+<div class="diagram-custom">
     <div class="diagram-title">Diagram 1 - Full Attack Overview: From Disk to SYSTEM Shell </div>
     <img width="1189" height="846" alt="image" src="https://github.com/user-attachments/assets/d9185e02-ccba-4e82-b33a-5684915c1cac" />
 </div>
