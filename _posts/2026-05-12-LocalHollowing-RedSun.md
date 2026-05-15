@@ -15,9 +15,9 @@ Posted on May 12, 2026
 
 # Bypass Native Malicious PE Static Detection with Local Hollowing
 
-## Context - What is RedSun (CVE-2026-33825)?
+## Context : What is RedSun (CVE-2026-33825) ?
 
-During a penetration test engagement, I exploited **CVE-2026-33825**, also known as **RedSun** - a Local Privilege Escalation vulnerability affecting Microsoft Windows Defender's cloud file rollback mechanism.
+During a penetration test engagement, I exploited **CVE-2026-33825**, also known as **RedSun**, a Local Privilege Escalation vulnerability affecting Microsoft Windows Defender's cloud file rollback mechanism.
 
 The vulnerability allows a low-privileged user to escalate to **SYSTEM** by:
 
@@ -29,7 +29,7 @@ Because Defender runs as SYSTEM, the overwritten binary is later executed in a f
 
 The public PoC for RedSun is available at: [https://github.com/Nightmare-Eclipse/RedSun](https://github.com/Nightmare-Eclipse/RedSun)
 
-The problem? **Dropping the raw RedSun.exe on disk is immediately flagged by Windows Defender and most AV engines**, precisely because it is what triggers Defender's remediation in the first place - Defender would simply delete it before it can run.
+The problem ? **Dropping the raw RedSun.exe on disk is immediately flagged by Windows Defender and most AV engines**, precisely because it is what triggers Defender's remediation in the first place. Defender would simply delete it before it can run.
 
 ---
 
@@ -242,28 +242,6 @@ The main thread resumes execution at the RedSun entry point - fully mapped, full
 
 ---
 
-## Execution Flow Summary
-
-```
-main()
-  │
-  ├─ GetCurrentThread()          → pseudo-handle
-  ├─ DuplicateHandle()           → real handle to main thread
-  ├─ CreateThread(Doit)          → secondary thread spawned
-  │
-  └─ WaitForSingleObject()       → blocks until Doit finishes
-
-Doit()
-  │
-  ├─ SuspendThread(mainThread)   → pause main thread
-  ├─ AES Decrypt(encryptedBlob)  → RedSun.exe in memory
-  ├─ VirtualAlloc()              → allocate space for image
-  ├─ Map Headers + Sections      → PE layout in memory
-  ├─ Apply Relocations           → fix absolute addresses
-  ├─ Resolve Imports             → patch IAT via LoadLibrary
-  ├─ SetThreadContext(RIP → EP)  → redirect main thread to EP
-  └─ ResumeThread(mainThread)    → RedSun executes as SYSTEM
-```
 
 ---
 
