@@ -330,7 +330,7 @@
 
   <div class="meta-row">
     <div>Posted on <b>May 2026</b></div>
-    <div>Author <b>GreenPlasma</b></div>
+    <div>Author <b>Im0s</b></div>
     <div>Builds tested <b>24H2 · 25H2 · Win10 22H2</b></div>
   </div>
 
@@ -545,6 +545,10 @@ wsprintf(section_path, L"\\Sessions\\%d\\BaseNamedObjects\\CTFMON_DEAD", sesid);
     <strong>Why the kernel kept the object alive:</strong> Named objects in the Windows Object Manager are reference-counted. A named section created via <code>NtCreateSection</code> (or opened via <code>NtOpenSection</code>) increments the reference count for each outstanding handle, regardless of which process holds it. The symlink I created redirected ctfmon's open to <code>\BaseNamedObjects\CTFMON_DEAD</code>, so ctfmon incremented that object's count. After my process died, ctfmon's handle alone was enough to keep the object, and by extension the symlink pointing to it, alive in the namespace. Without killing ctfmon or rebooting, the ghost persists.
   </div>
 
+  <div class="screenshot-wrap">
+    <img src="../assets/img/GreenPlasma_2026-05-16_151650_Stuck.png" alt="The PoC never explicitly closed that handle before its process exited." />
+  </div>
+  
   <p>I modified the loader to handle all three phases of this problem gracefully, without discarding the original error reporting.</p>
 
   <h3>1. Graceful symlink collision (0xC0000035)</h3>
