@@ -396,7 +396,7 @@
   <!-- ===================================================== -->
   <h2>First failure: Error 161</h2>
 
-  <p>My first problem was a typo. Error 161 from <code>CreateFileMappingW</code> means <code>ERROR_BAD_PATHNAME</code>. The path looked correct, but there was a double backslash before <code>BaseNamedObjects</code>. Windows cannot parse the path, so it never reaches the permission check. The fix is one backslash instead of two.</p>
+  <p>My first problem was a typo. Error 161 from <code>CreateFileMappingW</code> means <code>ERROR_BAD_PATHNAME</code>. The path looked correct, but there was a double backslash before <code>BaseNamedObjects</code> --'. Windows cannot parse the path, so it never reaches the permission check. The fix is one backslash instead of two.</p>
 
   <div class="code-block">
     <div class="code-label">section path : wrong vs correct</div>
@@ -407,6 +407,10 @@ wsprintf(section_path, L"\\Sessions\\%d\\\\BaseNamedObjects\\CTFMON_DEAD", sesid
 wsprintf(section_path, L"\\Sessions\\%d\\BaseNamedObjects\\CTFMON_DEAD", sesid);</pre>
   </div>
 
+  <div class="screenshot-wrap">
+    <img src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExNnN5bXIxMG83c2JlNnhieG0xc3VubDN1MmZmeHUyZGtrNzZuaWR4YyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/YrBRYRDN4M5ryrNOND/giphy.gif" alt="Original GreenPlasma.exe: Section handle 0x248 left open, direct cause of 0xC0000035 on the next run" />
+  </div>
+  
   <!-- ===================================================== -->
   <h2>Second failure: 0xC0000022 (ACCESS DENIED)</h2>
 
@@ -625,7 +629,7 @@ if (!hSystemSection) {
   <div class="code-block">
     <div class="code-label">write attempt then read-only fallback : both error codes preserved</div>
     <pre><span style="color:#52525b">// First attempt: WRITE access (the exploit path).</span>
-<span style="color:#52525b">// On patched builds this returns 0xC0000022 / Win32 error 5.</span>
+<span style="color:#52525b">// On patched builds this returns 0xC0000022 .. WRITE access => ça marche pas !</span>
 void* pMapped = MapViewOfFile(hSystemSection, FILE_MAP_WRITE, 0, 0, 0);
 
 if (!pMapped) {
@@ -633,12 +637,11 @@ if (!pMapped) {
     if (err == 5) { <span style="color:#52525b">// ERROR_ACCESS_DENIED == 0xC0000022</span>
         printf("  [FAIL] NtMapViewOfSection returned 0xC0000022\n");
 
-        <span style="color:#52525b">// Fallback: read-only mapping to confirm object presence and inspect layout.</span>
-        <span style="color:#52525b">// This does NOT advance the exploit - purely diagnostic.</span>
+        <span style="color:#52525b">// // Fallback en lecture seule (Merci la communaute)</span>
         pMapped = MapViewOfFile(hSystemSection, FILE_MAP_READ, 0, 0, 0);
         if (pMapped) {
             printf("  [OK] Section mapped READ-ONLY at 0x%p\n", pMapped);
-            <span style="color:#52525b">// Dump first 256 bytes: reveals the internal ctfmon cache layout</span>
+            <span style="color:#52525b">// Dump first 256 bytes</span>
             for (int i = 0; i &lt; 256; i++) {
                 printf("%02X ", ((BYTE*)pMapped)[i]);
                 if ((i+1) % 16 == 0) printf("\n  ");
@@ -646,9 +649,8 @@ if (!pMapped) {
             UnmapViewOfFile(pMapped);
         }
     }
-} else {
-    printf("  [SUCCESS] Section mapped with WRITE access (vulnerable build)\n");
-    <span style="color:#f87171">// Payload injection would go here on a vulnerable build</span>
+} 
+    <span style="color:#f87171">// ... </span>
 }</pre>
   </div>
 
@@ -656,7 +658,6 @@ if (!pMapped) {
 
   <div class="screenshot-wrap">
     <img src="../assets/img/GreenPlasma_2026-05-16 141134.png" alt="Console: 0xC0000022 on FILE_MAP_WRITE, read-only fallback succeeds, hex dump of section content" />
-    
   </div>
 
   <p>The next screenshot shows the original <code>GreenPlasma.exe</code> PoC as it actually behaves: it stops after acquiring handle <code>0x248</code> and waits for keyboard input without ever closing it. That open handle is exactly what keeps the symlink alive in the namespace and triggers the <code>0xC0000035</code> collision on the next run.</p>
