@@ -615,7 +615,7 @@ if (!hSystemSection) {
   <p>The screenshot below shows the console and WinObj side by side at the moment the SYSTEM section is acquired. You can see handle <code>0x2A8</code> obtained after polling, and in WinObj the symlink <code>CTF.AsmListCache.FMPWinlogon1</code> correctly pointing to <code>\BaseNamedObjects\CTFMON_DEAD</code>, with the matching <code>Section</code> object visible under <code>\BaseNamedObjects</code>.</p>
 
   <div class="screenshot-wrap">
-    <img src="GreenPlasma_2026-05-16 141105.png" alt="Console output: section handle acquired + WinObj showing CTF.AsmListCache.FMPWinlogon1 symlink pointing to CTFMON_DEAD" />
+    <img src="../assets/img/GreenPlasma_2026-05-16 141105.png" alt="Console output: section handle acquired + WinObj showing CTF.AsmListCache.FMPWinlogon1 symlink pointing to CTFMON_DEAD" />
   </div>
 
   <h3>3. Read-only fallback with preserved error reporting</h3>
@@ -655,14 +655,14 @@ if (!pMapped) {
   <p>The two screenshots below show this fallback in action. The first shows the <code>0xC0000022</code> on <code>FILE_MAP_WRITE</code>, the read-only mapping succeeding, and the hex dump of the section's first bytes (a SID in UTF-16LE followed by unknown binary fields). The second confirms that on this build the section stays read-only all the way through, which is exactly what the "RIP" line is telling us: <code>SECTION_MAP_WRITE</code> is absent from the granted access mask.</p>
 
   <div class="screenshot-wrap">
-    <img src="GreenPlasma_2026-05-16 141134.png" alt="Console: 0xC0000022 on FILE_MAP_WRITE, read-only fallback succeeds, hex dump of section content" />
+    <img src="../assets/img/GreenPlasma_2026-05-16 141134.png" alt="Console: 0xC0000022 on FILE_MAP_WRITE, read-only fallback succeeds, hex dump of section content" />
     
   </div>
 
   <p>The next screenshot shows the original <code>GreenPlasma.exe</code> PoC as it actually behaves: it stops after acquiring handle <code>0x248</code> and waits for keyboard input without ever closing it. That open handle is exactly what keeps the symlink alive in the namespace and triggers the <code>0xC0000035</code> collision on the next run.</p>
 
   <div class="screenshot-wrap">
-    <img src="GreenPlasma_2026-05-16 141156.png" alt="Original GreenPlasma.exe: Section handle 0x248 left open, direct cause of 0xC0000035 on the next run" />
+    <img src="../assets/img/GreenPlasma_2026-05-16 141156.png" alt="Original GreenPlasma.exe: Section handle 0x248 left open, direct cause of 0xC0000035 on the next run" />
   </div>
 
   <!-- ===================================================== -->
