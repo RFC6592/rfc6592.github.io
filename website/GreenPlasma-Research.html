@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GreenPlasma: Why my exploit stopped working on new Windows builds | Im0s</title>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg: #0c0c0e;
+      --surface: #111114;
+      --border: #1e1e24;
+      --border2: #2a2a34;
+      --accent: #22c55e;
+      --accent2: #4ade80;
+      --red: #ef4444;
+      --red2: #f87171;
+      --orange: #f59e0b;
+      --muted: #52525b;
+      --text: #a1a1aa;
+      --text-hi: #e4e4e7;
+      --code-bg: #0a0a0c;
+      --tag-bg: #18181b;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 15px;
+      line-height: 1.8;
+    }
+
+    /* ── NAV ── */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: .9rem 2.5rem;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: rgba(12,12,14,.93);
+      backdrop-filter: blur(12px);
+      z-index: 100;
+    }
+    .nav-logo {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-hi);
+      letter-spacing: -.01em;
+      text-decoration: none;
+    }
+    .nav-logo span { color: var(--accent2); }
+    .nav-links { display: flex; gap: 2rem; }
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: .83rem;
+      letter-spacing: .03em;
+      transition: color .18s;
+    }
+    .nav-links a:hover { color: var(--text-hi); }
+
+    /* ── LAYOUT ── */
+    .wrapper {
+      max-width: 860px;
+      margin: 0 auto;
+      padding: 3.5rem 2rem 7rem;
+    }
+
+    /* ── EYEBROW / BREADCRUMB ── */
+    .eyebrow {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: .72rem;
+      color: var(--muted);
+      letter-spacing: .04em;
+      margin-bottom: 1.6rem;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+    .eyebrow a { color: var(--muted); text-decoration: none; }
+    .eyebrow a:hover { color: var(--text); }
+    .eyebrow .sep { color: var(--border2); }
+
+    /* ── HERO LABEL ── */
+    .hero-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: .65rem;
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1rem;
+    }
+
+    /* ── TITLE ── */
+    h1 {
+      font-family: 'IBM Plex Sans', sans-serif;
+      font-size: 2.1rem;
+      font-weight: 600;
+      color: var(--text-hi);
+      line-height: 1.22;
+      letter-spacing: -.025em;
+      margin-bottom: 1.2rem;
+      max-width: 720px;
+    }
+
+    /* ── META ROW ── */
+    .meta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.6rem;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: .72rem;
+      color: var(--muted);
+      margin-bottom: 2rem;
+    }
+    .meta-row b { color: var(--text); font-weight: 500; }
+
+    /* ── TAGS ── */
+    .tags { display: flex; flex-wrap: wrap; gap: .45rem; margin-bottom: 2.5rem; }
+    .tag {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: .67rem;
+      font-weight: 600;
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      padding: .18rem .55rem;
+      border-radius: 3px;
+      background: var(--tag-bg);
+      border: 1px solid var(--border2);
+      color: var(--accent2);
+    }
+    .tag.red   { color: #f87171; border-color: #3f1d1d; background: #1a0d0d; }
+    .tag.green { color: #4ade80; border-color: #1a3327; background: #0d1a12; }
+
+    /* ── LEAD / DESCRIPTION ── */
+    .lead {
+      font-size: .92rem;
+      color: var(--muted);
+      border-left: 2px solid var(--accent);
+      padding-left: 1.1rem;
+      line-height: 1.7;
+      margin-bottom: 2.5rem;
+      max-width: 680px;
+    }
+
+    /* ── HEADINGS ── */
+    h2 {
+      font-size: 1.22rem;
+      font-weight: 600;
+      color: var(--text-hi);
+      letter-spacing: -.015em;
+      margin: 3rem 0 .9rem;
+      padding-left: 1rem;
+      border-left: 2px solid var(--accent);
+    }
+    h3 {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: .92rem;
+      font-weight: 500;
+      color: var(--accent2);
+      margin: 2rem 0 .7rem;
+    }
+
+    p { margin-bottom: 1.1rem; color: var(--text); }
+
+    /* ── INLINE CODE ── */
+    p code, li code, td code {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: .8rem;
+      background: #131318;
+      color: #86efac;
+      border: 1px solid #252530;
+      border-radius: 3px;
+      padding: .1rem .32rem;
+    }
+
+    a { color: var(--accent2); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+
+    /* ── CODE BLOCKS ── */
+    .code-block {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin: 1.4rem 0;
+      overflow: hidden;
+    }
+    .code-label {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: .65rem;
+      color: var(--muted);
+      letter-spacing: .07em;
+      text-transform: uppercase;
+      padding: .6rem 1.2rem;
+      border-bottom: 1px solid var(--border);
+      background: #0d0d10;
+    }
+    .code-block pre {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: .78rem;
+      line-height: 1.7;
+      color: #86efac;
+      padding: 1.1rem 1.3rem;
+      overflow-x: auto;
+      white-space: pre;
+    }
+
+    /* ── CALLOUTS ── */
+    .callout {
+      border-left: 2px solid var(--red);
+      background: #130d0d;
+      border-radius: 0 6px 6px 0;
+      padding: .9rem 1.2rem;
+      margin: 1.4rem 0;
+      font-size: .87rem;
+      line-height: 1.75;
+    }
+    .callout.info  { border-color: var(--accent); background: #0c1410; }
+    .callout.ok    { border-color: var(--accent2); background: #0a1210; }
+    .callout.warn  { border-color: var(--orange); background: #130f07; }
+    .callout strong { color: var(--text-hi); }
+
+    /* ── QUOTE BLOCKS ── */
+    .quote-block {
+      border-left: 2px solid var(--border2);
+      background: #0d0d12;
+      padding: .9rem 1.2rem;
+      margin: 1.2rem 0;
+      border-radius: 0 5px 5px 0;
+      font-size: .87rem;
+      line-height: 1.75;
+    }
+    .quote-author {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: .68rem;
+      color: var(--accent2);
+      margin-bottom: .4rem;
+      letter-spacing: .03em;
+    }
+
+    /* ── TABLE ── */
+    table { width: 100%; border-collapse: collapse; margin: 1.5rem 0; font-size: .85rem; }
+    th {
+      background: #111116;
+      color: #a1a1aa;
+      border: 1px solid var(--border2);
+      padding: .55rem .9rem;
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: .7rem;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      font-weight: 500;
+      text-align: left;
+    }
+    td { border: 1px solid var(--border); padding: .55rem .9rem; color: var(--text); }
+    tr:nth-child(even) td { background: #0d0d11; }
+
+    /* ── DIAGRAMS ── */
+    .diagram-wrap {
+      background: var(--code-bg);
+      border: 1px solid var(--border2);
+      border-radius: 10px;
+      padding: 1.4rem 1rem;
+      margin: 2rem 0;
+      overflow-x: auto;
+    }
+    .diagram-title {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: .65rem;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .09em;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    /* ── SCREENSHOT ── */
+    .screenshot-wrap {
+      border: 1px solid var(--border2);
+      border-radius: 8px;
+      overflow: hidden;
+      margin: 1.4rem 0;
+    }
+    .screenshot-wrap img { width: 100%; display: block; }
+
+    /* ── DIVIDER / FOOTER ── */
+    hr { border: none; height: 1px; background: var(--border); margin: 2.5rem 0; }
+    .foot {
+      margin-top: 3.5rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid var(--border);
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: .72rem;
+      color: var(--muted);
+      line-height: 2;
+    }
+    .foot a { color: var(--muted); }
+    .foot a:hover { color: var(--text); }
+  </style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-logo" href="https://im0s.com">Im0s<span>.</span></a>
+  <div class="nav-links">
+    <a href="https://im0s.com">Blog</a>
+    <a href="https://im0s.com/aboutme">About Me</a>
+    <a href="https://im0s.com/tags#CyberSec">CyberSec</a>
+  </div>
+</nav>
+
+<div class="wrapper">
+
+  <div class="eyebrow">
+    <a href="https://im0s.com">im0s.com</a>
+    <span class="sep">/</span>
+    windows-internals-greenplasma
+  </div>
+
+  <div class="hero-label">WinInternals</div>
+
+  <h1>GreenPlasma: Why my exploit stopped working on new Windows builds</h1>
+
+  <div class="meta-row">
+    <div>Posted on <b>May 2026</b></div>
+    <div>Author <b>GreenPlasma</b></div>
+    <div>Builds tested <b>24H2 · 25H2 · Win10 22H2</b></div>
+  </div>
+
+  <div class="tags">
+    <span class="tag">Windows Internals</span>
+    <span class="tag">Object Manager</span>
+    <span class="tag red">DACL Patch</span>
+    <span class="tag">ctfmon.exe</span>
+    <span class="tag">cldapi.dll</span>
+    <span class="tag green">Patched</span>
+  </div>
+
+  <div class="lead">
+    A deep dive into error codes 161, 0xC0000035, and 0xC0000022. How a silent DACL patch broke a promising privilege escalation chain, and what community debugging revealed about the two remaining gates.
+  </div>
+
+  <p>I spent days testing GreenPlasma across different Windows builds. On paper the exploit was elegant: trick <code>ctfmon.exe</code> into creating a SYSTEM-owned memory section, map it with write access, inject a DLL. But on my machines it kept failing. The errors changed depending on the build, and each failure taught me something about how Windows security has evolved.</p>
+
+  <!-- ===================================================== -->
+  <h2>What is GreenPlasma?</h2>
+
+  <p>GreenPlasma abuses <code>ctfmon.exe</code>, the Windows process handling touch keyboard, voice typing, and text input. The exploit creates an object manager symlink that redirects <code>ctfmon</code> to write a SYSTEM-owned section object to a predictable path. The attacker then opens that section and maps it with <code>PAGE_READWRITE</code> permissions. Because the section belongs to SYSTEM, data written there gets consumed with elevated privileges.</p>
+
+  <div class="diagram-wrap">
+    <div class="diagram-title">Diagram 1 — GreenPlasma Intended Attack Chain</div>
+    <svg viewBox="0 0 820 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;min-width:600px;font-family:'IBM Plex Mono',monospace;">
+      <defs>
+        <marker id="arr" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+          <polygon points="0 0,8 3,0 6" fill="#22c55e"/>
+        </marker>
+      </defs>
+      <rect x="10"  y="70" width="110" height="58" rx="7" fill="#0e1a12" stroke="#22c55e" stroke-width="1.2"/>
+      <text x="65"  y="97"  text-anchor="middle" fill="#4ade80" font-size="11" font-weight="600">ATTACKER</text>
+      <text x="65"  y="113" text-anchor="middle" fill="#52525b" font-size="9">low-priv user</text>
+      <line x1="120" y1="99" x2="163" y2="99" stroke="#22c55e" stroke-width="1.3" marker-end="url(#arr)"/>
+      <text x="141" y="92" text-anchor="middle" fill="#52525b" font-size="8">symlink</text>
+      <rect x="164" y="70" width="130" height="58" rx="7" fill="#111116" stroke="#2a2a34" stroke-width="1"/>
+      <text x="229" y="93"  text-anchor="middle" fill="#e4e4e7" font-size="10" font-weight="600">NtCreateSymbolic</text>
+      <text x="229" y="107" text-anchor="middle" fill="#e4e4e7" font-size="10" font-weight="600">LinkObject</text>
+      <text x="229" y="121" text-anchor="middle" fill="#52525b" font-size="8">\BaseNamedObjects\...</text>
+      <line x1="294" y1="99" x2="337" y2="99" stroke="#22c55e" stroke-width="1.3" marker-end="url(#arr)"/>
+      <text x="315" y="92" text-anchor="middle" fill="#52525b" font-size="8">redirect</text>
+      <rect x="338" y="60" width="120" height="78" rx="7" fill="#141420" stroke="#2a2a34" stroke-width="1"/>
+      <text x="398" y="87"  text-anchor="middle" fill="#e4e4e7" font-size="10" font-weight="600">ctfmon.exe</text>
+      <text x="398" y="103" text-anchor="middle" fill="#52525b" font-size="8">NT AUTHORITY</text>
+      <text x="398" y="116" text-anchor="middle" fill="#52525b" font-size="8">\SYSTEM</text>
+      <text x="398" y="129" text-anchor="middle" fill="#22c55e" font-size="8">creates section</text>
+      <line x1="458" y1="99" x2="501" y2="99" stroke="#22c55e" stroke-width="1.3" marker-end="url(#arr)"/>
+      <text x="479" y="92" text-anchor="middle" fill="#52525b" font-size="8">open+map</text>
+      <rect x="502" y="70" width="120" height="58" rx="7" fill="#111116" stroke="#2a2a34" stroke-width="1"/>
+      <text x="562" y="93"  text-anchor="middle" fill="#e4e4e7" font-size="10" font-weight="600">SYSTEM Section</text>
+      <text x="562" y="107" text-anchor="middle" fill="#52525b" font-size="8">PAGE_READWRITE</text>
+      <text x="562" y="120" text-anchor="middle" fill="#4ade80" font-size="8">writable (vuln only)</text>
+      <line x1="622" y1="99" x2="665" y2="99" stroke="#22c55e" stroke-width="1.3" marker-end="url(#arr)"/>
+      <text x="643" y="92" text-anchor="middle" fill="#52525b" font-size="8">write DLL</text>
+      <rect x="666" y="70" width="130" height="58" rx="7" fill="#0d1a12" stroke="#1a3327" stroke-width="1.2"/>
+      <text x="731" y="93"  text-anchor="middle" fill="#4ade80" font-size="10" font-weight="600">SYSTEM SHELL</text>
+      <text x="731" y="107" text-anchor="middle" fill="#52525b" font-size="8">NT AUTHORITY\SYSTEM</text>
+      <text x="731" y="120" text-anchor="middle" fill="#52525b" font-size="8">S-1-5-18</text>
+    </svg>
+  </div>
+
+  <!-- ===================================================== -->
+  <h2>First failure: Error 161</h2>
+
+  <p>My first problem was a typo. Error 161 from <code>CreateFileMappingW</code> means <code>ERROR_BAD_PATHNAME</code>. The path looked correct, but there was a double backslash before <code>BaseNamedObjects</code>. Windows cannot parse the path, so it never reaches the permission check. The fix is one backslash instead of two.</p>
+
+  <div class="code-block">
+    <div class="code-label">section path — wrong vs correct</div>
+    <pre><span style="color:#f87171">// Wrong: double backslash causes ERROR_BAD_PATHNAME (161)</span>
+wsprintf(section_path, L"\\Sessions\\%d\\\\BaseNamedObjects\\CTFMON_DEAD", sesid);
+
+<span style="color:#4ade80">// Correct</span>
+wsprintf(section_path, L"\\Sessions\\%d\\BaseNamedObjects\\CTFMON_DEAD", sesid);</pre>
+  </div>
+
+  <!-- ===================================================== -->
+  <h2>Second failure: 0xC0000022 (ACCESS DENIED)</h2>
+
+  <p>With the path fixed, the code opens the SYSTEM-owned section and gets a valid handle. But mapping it with <code>FILE_MAP_WRITE</code> fails. <code>GetLastError()</code> returns 5 (<code>ERROR_ACCESS_DENIED</code>, NT status <code>0xC0000022</code>). The code falls back to read-only and dumps the first 256 bytes:</p>
+
+  <div class="code-block">
+    <div class="code-label">stage 6 output on patched builds</div>
+    <pre>[Stage 6] Mapping SYSTEM section into current process...
+  <span style="color:#f87171">[FAIL] NtMapViewOfSection returned 0xC0000022</span>
+  <span style="color:#4ade80">[OK]   Section mapped READ-ONLY at 0x0000028FB2E50000 (size: 4096 bytes)</span>
+
+  Section data (first 256 bytes):
+  01 00 00 00 60 00 00 00 21 00 00 00 00 00 00 00 53 00 2D 00 31 00 2D 00 35 00 2D 00 32 00 31 00
+  2D 00 32 00 31 00 36 00 36 00 35 00 31 00 35 00 36 00 34 00 39 00 2D 00 34 00 30 00 36 00 38 00
+  ...</pre>
+  </div>
+
+  <p>The section contains what looks like a SID in UTF-16LE followed by unknown binary fields. This is probably internal ctfmon state rather than a plain DLL path slot.</p>
+
+  <p>Researcher refiaa dumped the SDDL from <code>\BaseNamedObjects\CTFMON_DEAD</code> on a patched 25H2 build and confirmed the cause:</p>
+
+  <div class="quote-block">
+    <div class="quote-author">refiaa, GitHub issue</div>
+    Dumped SDDL from \BaseNamedObjects\CTFMON_DEAD:<br/>
+    O:SYG:SYD:(A;;CCLCRC;;;AU)(A;;CCLCRC;;;IU)(A;;CCLCRC;;;BA)...<br/><br/>
+    AU/BA only get limited read/query-style rights, with no SECTION_MAP_WRITE-equivalent access, so NtMapViewOfSection with PAGE_READWRITE fails with 0xC0000022.
+  </div>
+
+  <p><code>CCLCRC</code> decodes to read, query, and read-control. No <code>GA</code>, no <code>GW</code>. The runtime granted access mask refiaa observed is <code>0x00020005</code> (query, read, read-control). <code>SECTION_MAP_WRITE</code> is zero. <code>NtOpenSection</code> attempts with <code>SECTION_MAP_WRITE</code> and <code>MAXIMUM_ALLOWED</code> both return <code>ACCESS_DENIED</code> or grant only the same read/query rights.</p>
+
+  <div class="diagram-wrap">
+    <div class="diagram-title">Diagram 2 — DACL Before and After the Patch</div>
+    <svg viewBox="0 0 820 230" xmlns="http://www.w3.org/2000/svg" style="width:100%;min-width:560px;font-family:'IBM Plex Mono',monospace;">
+      <rect x="30"  y="20" width="360" height="185" rx="8" fill="#0d1a12" stroke="#1a3327" stroke-width="1.2"/>
+      <text x="210" y="44" text-anchor="middle" fill="#4ade80" font-size="11" font-weight="600">BUILD 26200.8037 — VULNERABLE</text>
+      <line x1="30"  y1="52" x2="390" y2="52" stroke="#1a3327" stroke-width="1"/>
+      <text x="50"  y="75" fill="#52525b" font-size="9">PRINCIPAL</text>
+      <text x="230" y="75" fill="#52525b" font-size="9">ACCESS RIGHTS</text>
+      <line x1="30"  y1="82" x2="390" y2="82" stroke="#1e1e24" stroke-width="1"/>
+      <text x="50"  y="103" fill="#a1a1aa" font-size="10">Authenticated Users (AU)</text>
+      <text x="230" y="103" fill="#4ade80" font-size="10">GA · GW · GR</text>
+      <text x="50"  y="123" fill="#a1a1aa" font-size="10">Interactive Users (IU)</text>
+      <text x="230" y="123" fill="#4ade80" font-size="10">GA · GW · GR</text>
+      <text x="50"  y="143" fill="#a1a1aa" font-size="10">Administrators (BA)</text>
+      <text x="230" y="143" fill="#4ade80" font-size="10">GA · GW · GR</text>
+      <text x="50"  y="163" fill="#a1a1aa" font-size="10">SYSTEM (SY)</text>
+      <text x="230" y="163" fill="#4ade80" font-size="10">FULL CONTROL</text>
+      <rect x="40"  y="178" width="330" height="20" rx="4" fill="#0a1210"/>
+      <text x="205" y="192" text-anchor="middle" fill="#22c55e" font-size="9">FILE_MAP_WRITE succeeds — exploit works</text>
+
+      <rect x="430" y="20" width="360" height="185" rx="8" fill="#160d0d" stroke="#3f1d1d" stroke-width="1.2"/>
+      <text x="610" y="44" text-anchor="middle" fill="#f87171" font-size="11" font-weight="600">BUILD 26200.8246+ — PATCHED</text>
+      <line x1="430" y1="52" x2="790" y2="52" stroke="#3f1d1d" stroke-width="1"/>
+      <text x="450" y="75" fill="#52525b" font-size="9">PRINCIPAL</text>
+      <text x="630" y="75" fill="#52525b" font-size="9">ACCESS RIGHTS</text>
+      <line x1="430" y1="82" x2="790" y2="82" stroke="#1e1e24" stroke-width="1"/>
+      <text x="450" y="103" fill="#a1a1aa" font-size="10">Authenticated Users (AU)</text>
+      <text x="630" y="103" fill="#f87171" font-size="10">CC · LC · RC (read only)</text>
+      <text x="450" y="123" fill="#a1a1aa" font-size="10">Interactive Users (IU)</text>
+      <text x="630" y="123" fill="#f87171" font-size="10">CC · LC · RC (read only)</text>
+      <text x="450" y="143" fill="#a1a1aa" font-size="10">Administrators (BA)</text>
+      <text x="630" y="143" fill="#f87171" font-size="10">CC · LC · RC (read only)</text>
+      <text x="450" y="163" fill="#a1a1aa" font-size="10">SYSTEM (SY)</text>
+      <text x="630" y="163" fill="#4ade80" font-size="10">FULL CONTROL</text>
+      <rect x="440" y="178" width="330" height="20" rx="4" fill="#130d0d"/>
+      <text x="605" y="192" text-anchor="middle" fill="#ef4444" font-size="9">NtMapViewOfSection returns 0xC0000022 — exploit dead</text>
+    </svg>
+  </div>
+
+  <div class="callout warn">
+    <strong>Note on build ordering:</strong> yovecio18 reported the same <code>ACCESS_DENIED</code> on build 26200.6584, which is older than the confirmed-vulnerable 26200.8037. This means the boundary is not strictly linear. The DACL weakness may have existed only in a narrow window, or other environmental factors (VM configuration, update state) may affect the result.
+  </div>
+
+  <!-- ===================================================== -->
+  <h2>Third problem: The ghost section (0xC0000035)</h2>
+
+  <p>After an earlier run, <code>NtCreateSymbolicLinkObject</code> returned <code>0xC0000035</code> (STATUS_OBJECT_NAME_COLLISION) on the next attempt. The symlink from the previous run was still alive in the object manager namespace because the process had not properly closed its handle before exiting. The kernel keeps the object alive as long as a handle remains open anywhere.</p>
+
+  <p>The code handles this by opening the existing symlink when creation fails with collision, then continuing normally. A full reboot is the reliable cleanup path.</p>
+
+  <div class="diagram-wrap">
+    <div class="diagram-title">Diagram 3 — Ghost Section Lifecycle in the Object Manager Namespace</div>
+    <svg viewBox="0 0 820 200" xmlns="http://www.w3.org/2000/svg" style="width:100%;min-width:580px;font-family:'IBM Plex Mono',monospace;">
+      <defs>
+        <marker id="a2" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#22c55e"/></marker>
+        <marker id="a3" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#ef4444"/></marker>
+      </defs>
+      <line x1="60" y1="100" x2="760" y2="100" stroke="#1e1e24" stroke-width="1.5"/>
+
+      <circle cx="100" cy="100" r="5" fill="#22c55e"/>
+      <text x="100" y="85"  text-anchor="middle" fill="#52525b" font-size="8">t=0</text>
+      <text x="100" y="128" text-anchor="middle" fill="#a1a1aa" font-size="9">PoC.exe runs</text>
+      <text x="100" y="141" text-anchor="middle" fill="#52525b" font-size="8">symlink created</text>
+
+      <line x1="105" y1="100" x2="255" y2="100" stroke="#22c55e" stroke-width="1" marker-end="url(#a2)"/>
+      <circle cx="260" cy="100" r="5" fill="#22c55e"/>
+      <text x="260" y="85"  text-anchor="middle" fill="#52525b" font-size="8">t=1</text>
+      <text x="260" y="128" text-anchor="middle" fill="#a1a1aa" font-size="9">ctfmon creates</text>
+      <text x="260" y="141" text-anchor="middle" fill="#a1a1aa" font-size="9">SYSTEM section</text>
+
+      <line x1="265" y1="100" x2="415" y2="100" stroke="#22c55e" stroke-width="1" marker-end="url(#a2)"/>
+      <circle cx="420" cy="100" r="5" fill="#ef4444"/>
+      <text x="420" y="85"  text-anchor="middle" fill="#52525b" font-size="8">t=2</text>
+      <text x="420" y="128" text-anchor="middle" fill="#f87171" font-size="9">PoC.exe exits</text>
+      <text x="420" y="141" text-anchor="middle" fill="#f87171" font-size="9">handle NOT closed</text>
+
+      <line x1="425" y1="100" x2="575" y2="100" stroke="#ef4444" stroke-width="1" marker-end="url(#a3)"/>
+      <circle cx="580" cy="100" r="5" fill="#ef4444"/>
+      <text x="580" y="85"  text-anchor="middle" fill="#52525b" font-size="8">t=3</text>
+      <text x="580" y="128" text-anchor="middle" fill="#f87171" font-size="9">Ghost section</text>
+      <text x="580" y="141" text-anchor="middle" fill="#f87171" font-size="9">still in namespace</text>
+
+      <line x1="585" y1="100" x2="715" y2="100" stroke="#ef4444" stroke-width="1" marker-end="url(#a3)"/>
+      <circle cx="720" cy="100" r="5" fill="#ef4444"/>
+      <text x="720" y="85"  text-anchor="middle" fill="#52525b" font-size="8">t=4</text>
+      <text x="720" y="128" text-anchor="middle" fill="#f87171" font-size="9">Next run returns</text>
+      <text x="720" y="141" text-anchor="middle" fill="#f87171" font-size="9">0xC0000035</text>
+
+      <rect x="290" y="162" width="240" height="28" rx="5" fill="#0c0c0e" stroke="#2a2a34"/>
+      <text x="410" y="180" text-anchor="middle" fill="#4ade80" font-size="9">Fix: reboot OR kill process owning the dangling handle</text>
+    </svg>
+  </div>
+
+  <!-- ===================================================== -->
+  <h2>My loader modifications: surviving a leaking PoC</h2>
+
+  <p>Before running my own instrumented build, I ran the original <code>GreenPlasma.exe</code> PoC directly. That first run went exactly as expected: the symlink was created, ctfmon created the SYSTEM section, and the handle was acquired. But the PoC never explicitly closed that handle before its process exited. Windows does close handles when a process terminates, but the <em>section object itself</em> is a named kernel object kept alive by reference count, not just by the process. Because the PoC had opened the section with <code>MAXIMUM_ALLOWED</code> and ctfmon still held its own handle, the object stayed in the namespace long after the process died.</p>
+
+  <p>The direct consequence: every subsequent run of the PoC hit <code>0xC0000035</code> (<code>STATUS_OBJECT_NAME_COLLISION</code>) on the <code>NtCreateSymbolicLinkObject</code> call, because the symlink was still alive at <code>\Sessions\1\BaseNamedObjects\CTF.AsmListCache.FMPWinlogon1</code>. The PoC had no recovery path for this: it returned <code>1</code> and exited. A reboot was the only way to clean it up.</p>
+
+  <div class="callout info">
+    <strong>Why the kernel kept the object alive:</strong> Named objects in the Windows Object Manager are reference-counted. A named section created via <code>NtCreateSection</code> (or opened via <code>NtOpenSection</code>) increments the reference count for each outstanding handle, regardless of which process holds it. The symlink I created redirected ctfmon's open to <code>\BaseNamedObjects\CTFMON_DEAD</code>, so ctfmon incremented that object's count. After my process died, ctfmon's handle alone was enough to keep the object, and by extension the symlink pointing to it, alive in the namespace. Without killing ctfmon or rebooting, the ghost persists.
+  </div>
+
+  <p>I modified the loader to handle all three phases of this problem gracefully, without discarding the original error reporting.</p>
+
+  <h3>1. Graceful symlink collision (0xC0000035)</h3>
+
+  <p>When <code>NtCreateSymbolicLinkObject</code> returns <code>0xC0000035</code>, the code no longer aborts. Instead I re-initialise the <code>OBJECT_ATTRIBUTES</code> structure for the same path and call <code>NtOpenSymbolicLinkObject</code> with <code>GENERIC_ALL</code>. If that succeeds, the existing handle is reused exactly as if creation had just succeeded, and execution continues to the section-polling loop. If the open also fails, the original error is printed with its cause.</p>
+
+  <div class="code-block">
+    <div class="code-label">symlink collision recovery — NtOpenSymbolicLinkObject fallback</div>
+    <pre><span style="color:#52525b">// NtCreateSymbolicLinkObject returned 0xC0000035: name collision.</span>
+<span style="color:#52525b">// The previous run did not close its handle; the symlink is still alive.</span>
+<span style="color:#52525b">// Rather than aborting, open the existing object and reuse its handle.</span>
+
+if (stat == 0xC0000035) {
+    printf("[!] Symlink already exists (0xC0000035)\n");
+    printf("[*] Previous run leaked handle - symlink kept alive by kernel ref count\n");
+    printf("[*] Trying NtOpenSymbolicLinkObject on existing entry...\n");
+
+    InitializeObjectAttributes(&amp;objattr, &amp;linksrc, OBJ_CASE_INSENSITIVE, NULL, NULL);
+
+    HANDLE hExistingLink = NULL;
+    NTSTATUS openStat = NtOpenSymbolicLinkObject(
+        &amp;hExistingLink, GENERIC_ALL, &amp;objattr);
+
+    if (NT_SUCCESS(openStat)) {
+        hlnk = hExistingLink;   <span style="color:#4ade80">// reused: execution continues normally</span>
+        printf("[+] Existing symlink opened successfully\n");
+    } else {
+        printf("[!] Failed to open existing symlink: 0x%08X\n", openStat);
+        printf("=> Try rebooting to clean up the dangling namespace entry\n");
+        free(dllData);
+        return 1;
+    }
+}</pre>
+  </div>
+
+  <h3>2. Polling loop waiting for the SYSTEM section</h3>
+
+  <p>The original PoC assumed ctfmon would create its section quickly. On my test machines the timing window was narrower than expected: if ctfmon had not yet re-initialised after the UAC prompt, the section simply was not there. My modified loader polls <code>NtOpenSection</code> in a loop for up to 30 seconds in 100 ms increments, printing progress dots every second. If the section never appears, a timeout message distinguishes a patched build from a plain timing miss.</p>
+
+  <div class="code-block">
+    <div class="code-label">section polling loop — wait up to 30 s for ctfmon to create the SYSTEM section</div>
+    <pre><span style="color:#52525b">// NtOpenSection is called in a loop until the section appears or the timeout</span>
+<span style="color:#52525b">// expires. This handles the race between the UAC prompt and ctfmon</span>
+<span style="color:#52525b">// re-creating the section in response to the new session state.</span>
+
+HANDLE hSystemSection = NULL;
+int attempts = 0, max_attempts = 300; <span style="color:#52525b">// 300 x 100 ms = 30 s</span>
+
+InitializeObjectAttributes(&amp;poll_attr, &amp;linksrc, OBJ_CASE_INSENSITIVE, NULL, NULL);
+
+while (!hSystemSection &amp;&amp; attempts &lt; max_attempts) {
+    NTSTATUS result = NtOpenSection(
+        &amp;hSystemSection, MAXIMUM_ALLOWED, &amp;poll_attr);
+    if (NT_SUCCESS(result) &amp;&amp; hSystemSection) {
+        printf("  [OK] Section handle acquired: 0x%p\n", hSystemSection);
+        break;
+    }
+    Sleep(100);
+    if (++attempts % 10 == 0) printf(".");
+}
+
+if (!hSystemSection) {
+    printf("\n[!] TIMEOUT: SYSTEM section never appeared\n");
+    printf("[!] Build may be patched or ctfmon behaviour changed\n");
+    CloseHandle(hlnk);
+    free(dllData);
+    return 1;
+}</pre>
+  </div>
+
+  <p>The screenshot below shows the console and WinObj side by side at the moment the SYSTEM section is acquired. You can see handle <code>0x2A8</code> obtained after polling, and in WinObj the symlink <code>CTF.AsmListCache.FMPWinlogon1</code> correctly pointing to <code>\BaseNamedObjects\CTFMON_DEAD</code>, with the matching <code>Section</code> object visible under <code>\BaseNamedObjects</code>.</p>
+
+  <div class="screenshot-wrap">
+    <img src="Capture_d_écran_2026-05-16_141105.png" alt="Console output: section handle acquired + WinObj showing CTF.AsmListCache.FMPWinlogon1 symlink pointing to CTFMON_DEAD" />
+  </div>
+
+  <h3>3. Read-only fallback with preserved error reporting</h3>
+
+  <p>On patched builds the section DACL only grants read access to Medium-IL callers (granted mask <code>0x00020005</code>, <code>SECTION_MAP_WRITE</code> absent). <code>MapViewOfFile</code> with <code>FILE_MAP_WRITE</code> returns <code>ERROR_ACCESS_DENIED</code> (Win32 error 5, NT status <code>0xC0000022</code>). Rather than stopping there, the loader retries with <code>FILE_MAP_READ</code> and dumps the first 256 bytes of section content. This is deliberately a dead end for the exploit, but it serves two purposes: it confirms the section exists and is accessible (the plumbing up to Gate 1 is still working), and it lets me inspect the actual binary layout of the ctfmon cache, which will be needed before Gate 2 can be approached.</p>
+
+  <div class="code-block">
+    <div class="code-label">write attempt then read-only fallback — both error codes preserved</div>
+    <pre><span style="color:#52525b">// First attempt: WRITE access (the exploit path).</span>
+<span style="color:#52525b">// On patched builds this returns 0xC0000022 / Win32 error 5.</span>
+void* pMapped = MapViewOfFile(hSystemSection, FILE_MAP_WRITE, 0, 0, 0);
+
+if (!pMapped) {
+    DWORD err = GetLastError();
+    if (err == 5) { <span style="color:#52525b">// ERROR_ACCESS_DENIED == 0xC0000022</span>
+        printf("  [FAIL] NtMapViewOfSection returned 0xC0000022\n");
+
+        <span style="color:#52525b">// Fallback: read-only mapping to confirm object presence and inspect layout.</span>
+        <span style="color:#52525b">// This does NOT advance the exploit - purely diagnostic.</span>
+        pMapped = MapViewOfFile(hSystemSection, FILE_MAP_READ, 0, 0, 0);
+        if (pMapped) {
+            printf("  [OK] Section mapped READ-ONLY at 0x%p\n", pMapped);
+            <span style="color:#52525b">// Dump first 256 bytes: reveals the internal ctfmon cache layout</span>
+            for (int i = 0; i &lt; 256; i++) {
+                printf("%02X ", ((BYTE*)pMapped)[i]);
+                if ((i+1) % 16 == 0) printf("\n  ");
+            }
+            UnmapViewOfFile(pMapped);
+        }
+    }
+} else {
+    printf("  [SUCCESS] Section mapped with WRITE access (vulnerable build)\n");
+    <span style="color:#f87171">// Payload injection would go here on a vulnerable build</span>
+}</pre>
+  </div>
+
+  <p>The two screenshots below show this fallback in action. The first shows the <code>0xC0000022</code> on <code>FILE_MAP_WRITE</code>, the read-only mapping succeeding, and the hex dump of the section's first bytes (a SID in UTF-16LE followed by unknown binary fields). The second confirms that on this build the section stays read-only all the way through, which is exactly what the "RIP" line is telling us: <code>SECTION_MAP_WRITE</code> is absent from the granted access mask.</p>
+
+  <div class="screenshot-wrap">
+    <img src="Capture_d_écran_2026-05-16_141134.png" alt="Console: 0xC0000022 on FILE_MAP_WRITE, read-only fallback succeeds, hex dump of section content" />
+  </div>
+
+  <p>The next screenshot shows the original <code>GreenPlasma.exe</code> PoC as it actually behaves: it stops after acquiring handle <code>0x248</code> and waits for keyboard input without ever closing it. That open handle is exactly what keeps the symlink alive in the namespace and triggers the <code>0xC0000035</code> collision on the next run.</p>
+
+  <div class="screenshot-wrap">
+    <img src="Capture_d_écran_2026-05-16_141156.png" alt="Original GreenPlasma.exe: Section handle 0x248 left open, direct cause of 0xC0000035 on the next run" />
+  </div>
+
+  <!-- ===================================================== -->
+  <h2>Community findings: two gates on 25H2</h2>
+
+  <p>The GitHub issue thread surfaced two alternative approaches and clarified why neither fully works on recent 25H2 builds.</p>
+
+  <h3>Alternative: pre-squatting under \Sessions\1\BaseNamedObjects</h3>
+
+  <p>yovecio18 found that creating the section under <code>\Sessions\1\BaseNamedObjects</code> before the ctfmon symlink fires gives the attacker ownership of the object, so <code>FILE_MAP_WRITE</code> succeeds. But the DLL does not load. The path is written, nothing happens.</p>
+
+  <div class="quote-block">
+    <div class="quote-author">yovecio18, GitHub issue</div>
+    I changed the code to "squat" the object creation under /sessions/1/xxx before the code does the symlink and it actually maps the thing on rw but then the dll isn't being loaded for some reason.
+  </div>
+
+  <h3>The two-gate analysis (refiaa)</h3>
+
+  <div class="quote-block">
+    <div class="quote-author">refiaa, GitHub issue</div>
+    I would separate this into two gates. First: the section does not appear writable from Medium IL: granted access is 0x00020005, SECTION_MAP_WRITE=0. Second: even if we had a writable mapping, writing a plain path string is probably too naive. The current cache layout is only a hypothesis, not a verified msctf.dll schema. A real follow-up would require reversing the msctf cache creation/lookup/serialization path and identifying what fields the service actually consumes.
+  </div>
+
+  <div class="diagram-wrap">
+    <div class="diagram-title">Diagram 4 — Two Remaining Gates on 25H2</div>
+    <svg viewBox="0 0 820 220" xmlns="http://www.w3.org/2000/svg" style="width:100%;min-width:540px;font-family:'IBM Plex Mono',monospace;">
+      <defs>
+        <marker id="ag" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#22c55e"/></marker>
+        <marker id="ar" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#ef4444"/></marker>
+        <marker id="ao" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto"><polygon points="0 0,8 3,0 6" fill="#f59e0b"/></marker>
+      </defs>
+
+      <rect x="10" y="86" width="100" height="38" rx="6" fill="#111116" stroke="#2a2a34"/>
+      <text x="60" y="108" text-anchor="middle" fill="#a1a1aa" font-size="10">Exploit starts</text>
+
+      <line x1="110" y1="105" x2="178" y2="105" stroke="#22c55e" stroke-width="1.2" marker-end="url(#ag)"/>
+
+      <rect x="180" y="72" width="160" height="66" rx="6" fill="#130d0d" stroke="#ef4444" stroke-width="1.5"/>
+      <text x="260" y="94"  text-anchor="middle" fill="#f87171" font-size="10" font-weight="600">GATE 1</text>
+      <text x="260" y="110" text-anchor="middle" fill="#a1a1aa" font-size="9">Writable section</text>
+      <text x="260" y="124" text-anchor="middle" fill="#52525b" font-size="8">SECTION_MAP_WRITE granted?</text>
+
+      <line x1="260" y1="138" x2="260" y2="178" stroke="#ef4444" stroke-width="1" marker-end="url(#ar)"/>
+      <text x="274" y="164" fill="#ef4444" font-size="8">DACL: read-only</text>
+      <rect x="185" y="180" width="150" height="28" rx="5" fill="#130d0d" stroke="#3f1d1d"/>
+      <text x="260" y="198" text-anchor="middle" fill="#f87171" font-size="9">0xC0000022 — blocked</text>
+
+      <line x1="340" y1="105" x2="408" y2="105" stroke="#f59e0b" stroke-width="1.2" marker-end="url(#ao)"/>
+      <text x="374" y="97"  text-anchor="middle" fill="#f59e0b" font-size="8">pre-squat</text>
+      <text x="374" y="109" text-anchor="middle" fill="#f59e0b" font-size="8">workaround</text>
+
+      <rect x="410" y="72" width="180" height="66" rx="6" fill="#130f07" stroke="#f59e0b" stroke-width="1.5"/>
+      <text x="500" y="94"  text-anchor="middle" fill="#fbbf24" font-size="10" font-weight="600">GATE 2</text>
+      <text x="500" y="110" text-anchor="middle" fill="#a1a1aa" font-size="9">Correct data format</text>
+      <text x="500" y="124" text-anchor="middle" fill="#52525b" font-size="8">msctf.dll cache schema known?</text>
+
+      <line x1="500" y1="138" x2="500" y2="178" stroke="#f59e0b" stroke-width="1" marker-end="url(#ao)"/>
+      <text x="516" y="164" fill="#f59e0b" font-size="8">schema unknown</text>
+      <rect x="415" y="180" width="170" height="28" rx="5" fill="#130f07" stroke="#4a3a10"/>
+      <text x="500" y="198" text-anchor="middle" fill="#fbbf24" font-size="9">DLL written but not loaded</text>
+
+      <line x1="590" y1="105" x2="648" y2="105" stroke="#22c55e" stroke-width="1.2" marker-end="url(#ag)"/>
+
+      <rect x="650" y="86" width="150" height="38" rx="6" fill="#0d1a12" stroke="#1a3327"/>
+      <text x="725" y="104" text-anchor="middle" fill="#4ade80" font-size="10">Full LPE chain</text>
+      <text x="725" y="118" text-anchor="middle" fill="#52525b" font-size="8">not yet achieved</text>
+    </svg>
+  </div>
+
+  <p>Gate 2 would require reversing the msctf cache creation and serialization paths inside <code>msctf.dll</code> to understand the exact binary format the service reads from the section. A plain UTF-16LE path string at offset zero is not a verified structure.</p>
+
+  <!-- ===================================================== -->
+  <h2>Build timeline</h2>
+
+  <div class="diagram-wrap">
+    <div class="diagram-title">Diagram 5 — Windows 11 Build Timeline: Vulnerable vs Patched</div>
+    <svg viewBox="0 0 820 155" xmlns="http://www.w3.org/2000/svg" style="width:100%;min-width:580px;font-family:'IBM Plex Mono',monospace;">
+      <line x1="60" y1="78" x2="760" y2="78" stroke="#1e1e24" stroke-width="1.5"/>
+      <rect x="60" y="63" width="270" height="30" rx="3" fill="#0d1a12" opacity=".7"/>
+      <text x="195" y="82" text-anchor="middle" fill="#22c55e" font-size="9" font-weight="600">VULNERABLE (confirmed: 26200.8037)</text>
+      <line x1="330" y1="42" x2="330" y2="114" stroke="#ef4444" stroke-width="1.5" stroke-dasharray="4,3"/>
+      <text x="330" y="35" text-anchor="middle" fill="#ef4444" font-size="8">PATCH</text>
+      <rect x="330" y="63" width="430" height="30" rx="3" fill="#130d0d" opacity=".7"/>
+      <text x="545" y="82" text-anchor="middle" fill="#ef4444" font-size="9" font-weight="600">PATCHED</text>
+
+      <circle cx="130" cy="78" r="5" fill="#22c55e"/>
+      <text x="130" y="58"  text-anchor="middle" fill="#4ade80" font-size="8.5">26200.8037</text>
+      <text x="130" y="48"  text-anchor="middle" fill="#52525b" font-size="7.5">25H2 (vuln)</text>
+      <text x="130" y="110" text-anchor="middle" fill="#22c55e" font-size="7.5">Full RW confirmed</text>
+
+      <circle cx="330" cy="78" r="6" fill="#ef4444" stroke="#f87171" stroke-width="1"/>
+      <text x="330" y="58"  text-anchor="middle" fill="#f87171" font-size="8.5">26200.8246</text>
+      <text x="330" y="48"  text-anchor="middle" fill="#52525b" font-size="7.5">25H2 (fix)</text>
+      <text x="330" y="110" text-anchor="middle" fill="#ef4444" font-size="7.5">DACL tightened</text>
+
+      <circle cx="470" cy="78" r="5" fill="#ef4444"/>
+      <text x="470" y="58"  text-anchor="middle" fill="#f87171" font-size="8.5">26200.8457</text>
+      <text x="470" y="48"  text-anchor="middle" fill="#52525b" font-size="7.5">25H2 tested</text>
+      <text x="470" y="110" text-anchor="middle" fill="#ef4444" font-size="7.5">Read-only</text>
+
+      <circle cx="600" cy="78" r="5" fill="#ef4444"/>
+      <text x="600" y="58"  text-anchor="middle" fill="#f87171" font-size="8.5">26100.7171</text>
+      <text x="600" y="48"  text-anchor="middle" fill="#52525b" font-size="7.5">24H2 tested</text>
+      <text x="600" y="110" text-anchor="middle" fill="#ef4444" font-size="7.5">Read-only</text>
+
+      <circle cx="715" cy="78" r="5" fill="#ef4444"/>
+      <text x="715" y="58"  text-anchor="middle" fill="#f87171" font-size="8.5">26100.8837</text>
+      <text x="715" y="48"  text-anchor="middle" fill="#52525b" font-size="7.5">24H2 tested</text>
+      <text x="715" y="110" text-anchor="middle" fill="#ef4444" font-size="7.5">Read-only</text>
+
+      <text x="400" y="143" text-anchor="middle" fill="#52525b" font-size="7.5">Win10 22H2 (19045): code path absent entirely</text>
+    </svg>
+  </div>
+
+  <!-- ===================================================== -->
+  <h2>Error code summary</h2>
+
+  <table>
+    <thead>
+      <tr><th>Error Code</th><th>Meaning</th><th>Root Cause</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><code>161 (0xA1)</code></td>
+        <td>ERROR_BAD_PATHNAME</td>
+        <td>Double backslash in section path string</td>
+      </tr>
+      <tr>
+        <td><code>0xC0000035</code></td>
+        <td>STATUS_OBJECT_NAME_COLLISION</td>
+        <td>Symlink still alive from a previous run with a leaked handle</td>
+      </tr>
+      <tr>
+        <td><code>0xC0000022</code></td>
+        <td>STATUS_ACCESS_DENIED</td>
+        <td>DACL patched: section read-only for all non-SYSTEM principals. Granted access 0x00020005, SECTION_MAP_WRITE absent.</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="callout">
+    <strong>Final verdict per build:</strong><br/>
+    · 26100.7171 (24H2): DACL patched, read-only, fails at write step<br/>
+    · 26100.8837 (24H2): same<br/>
+    · 26200.8457 (25H2): same<br/>
+    · 26200.6584 (25H2 older): same, despite being older than 8037 (not yet explained)<br/>
+    · 19045.2965 (Win10 22H2): vulnerable code path absent entirely<br/>
+    · 26200.8037 (25H2): <span style="color:#4ade80">vulnerable, full read/write access confirmed by stevevanasche</span>
+  </div>
+
+  <!-- ===================================================== -->
+  <h2>Current state</h2>
+
+  <p>The section DACL patch kills the direct write path. The pre-squatting workaround bypasses Gate 1 but not Gate 2: the path is written but not consumed, because the exact msctf cache schema is unknown. As refiaa concluded after extensive debugging on 26200, without a real privileged consumer that follows the link and performs a meaningful write, there is no full LPE chain on current builds. The registry primitive via <code>cldapi.dll</code> remains functional but has no confirmed consumer on recent 25H2.</p>
+
+  <!-- ===================================================== -->
+  <h2>Conclusion</h2>
+
+  <p>This work helped me understand from the inside why an exploit that looks clean on paper can end up blocked at two separate points on recent builds: first by a silently tightened DACL that strips <code>SECTION_MAP_WRITE</code> from all non-SYSTEM principals, then by the complete absence of documentation on the binary format that <code>msctf.dll</code> actually consumes from the section. The modifications I made to the loader won't unblock Gate 1, but they make the diagnostic sturdier and avoid the false positives caused by the original PoC's handle leak.</p>
+
+  <p>I'm far from having all the answers here. If I got something wrong in my analysis, if my understanding of the kernel behaviour is off, or if I missed an obvious lead on Gate 2, please don't hesitate to reach out and correct me. Likewise, if anyone has already reversed the cache serialisation path inside <code>msctf.dll</code>, or has a theory about which privileged consumer could actually process the section after a pre-squat, I'd genuinely love to hear it. The whole point of this write-up is to share the state of my research as-is, mistakes included, so the community can collectively pick up where I left off.</p>
+
+  <hr/>
+  <div class="foot">
+    Builds tested: Windows 11 24H2 (26100.7171, 26100.8837) · Windows 11 25H2 (26200.8457, 26200.6584) · Windows 10 22H2 (19045.2965)<br/>
+    Community researchers: Piggo4676, yovecio18, stevevanasche, refiaa (GitHub issue thread)<br/>
+    <a href="https://im0s.com">Im0s</a> • 2026 • <a href="https://im0s.com">im0s.com</a>
+  </div>
+
+</div>
+</body>
+</html>
