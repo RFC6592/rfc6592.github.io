@@ -408,7 +408,7 @@ wsprintf(section_path, L"\\Sessions\\%d\\BaseNamedObjects\\CTFMON_DEAD", sesid);
   </div>
 
   <div class="screenshot-wrap">
-    <img src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExNnN5bXIxMG83c2JlNnhieG0xc3VubDN1MmZmeHUyZGtrNzZuaWR4YyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/YrBRYRDN4M5ryrNOND/giphy.gif" height="700px" alt="Original GreenPlasma.exe: Section handle 0x248 left open, direct cause of 0xC0000035 on the next run" />
+    <img src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExNnN5bXIxMG83c2JlNnhieG0xc3VubDN1MmZmeHUyZGtrNzZuaWR4YyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/YrBRYRDN4M5ryrNOND/giphy.gif" height="550px" alt="Original GreenPlasma.exe: Section handle 0x248 left open, direct cause of 0xC0000035 on the next run" />
   </div>
   
   <!-- ===================================================== -->
@@ -427,8 +427,6 @@ wsprintf(section_path, L"\\Sessions\\%d\\BaseNamedObjects\\CTFMON_DEAD", sesid);
   2D 00 32 00 31 00 36 00 36 00 35 00 31 00 35 00 36 00 34 00 39 00 2D 00 34 00 30 00 36 00 38 00
   ...</pre>
   </div>
-
-  <p>The section contains what looks like a SID in UTF-16LE followed by unknown binary fields. This is probably internal ctfmon state rather than a plain DLL path slot.</p>
 
   <p>Researcher refiaa dumped the SDDL from <code>\BaseNamedObjects\CTFMON_DEAD</code> on a patched 25H2 build and confirmed the cause:</p>
 
