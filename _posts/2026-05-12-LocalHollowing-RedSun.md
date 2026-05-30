@@ -15,9 +15,9 @@ Posted on May 12, 2026
 
 # Bypass Native Malicious PE Static Detection with Local Hollowing
 
-## Context : What is RedSun (CVE-2026-33825) ?
+## Context : What is RedSun (CVE-2026-41091) ?
 
-During a penetration test engagement, I exploited **CVE-2026-33825**, also known as **RedSun**, a Local Privilege Escalation vulnerability affecting Microsoft Windows Defender's cloud file rollback mechanism.
+During a penetration test engagement, I exploited **CVE-2026-41091**, also known as **RedSun**, a Local Privilege Escalation vulnerability affecting Microsoft Windows Defender's cloud file rollback mechanism.
 
 The vulnerability allows a low-privileged user to escalate to **SYSTEM** by:
 
@@ -273,7 +273,7 @@ The loader (`HarryPotter.exe`) was delivered to the target host. On execution:
 ## References
 
 - RedSun PoC - [https://github.com/Nightmare-Eclipse/RedSun](https://github.com/Nightmare-Eclipse/RedSun)
-- MSRC - CVE-2026-33825 - [https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-33825](https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-33825)
+- MSRC - CVE-2026-41091 - [https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-41091](https://msrc.microsoft.com/update-guide/vulnerability/CVE-2026-41091)
 - Picus Security - BlueHammer & RedSun Explained
 - MITRE ATT&CK - [T1055: Process Injection](https://attack.mitre.org/techniques/T1055/)
 - MITRE ATT&CK - [T1574: Hijack Execution Flow](https://attack.mitre.org/techniques/T1574/)
