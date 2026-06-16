@@ -397,25 +397,14 @@
   </div>
 
   <!-- ===================================================== -->
-  <h2>First failure: Error 161</h2>
 
-  <p>My first problem was a typo. Error 161 from <code>CreateFileMappingW</code> means <code>ERROR_BAD_PATHNAME</code>. The path looked correct, but there was a double backslash before <code>BaseNamedObjects</code> --'. Windows cannot parse the path, so it never reaches the permission check. The fix is one backslash instead of two.</p>
-
-  <div class="code-block">
-    <div class="code-label">section path : wrong vs correct</div>
-    <pre><span style="color:#f87171">// Wrong: double backslash causes ERROR_BAD_PATHNAME (161)</span>
-wsprintf(section_path, L"\\Sessions\\%d\\\\BaseNamedObjects\\CTFMON_DEAD", sesid);
-
-<span style="color:#4ade80">// Correct</span>
-wsprintf(section_path, L"\\Sessions\\%d\\BaseNamedObjects\\CTFMON_DEAD", sesid);</pre>
-  </div>
 
   <div class="screenshot-wrap">
     <img src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExNnN5bXIxMG83c2JlNnhieG0xc3VubDN1MmZmeHUyZGtrNzZuaWR4YyZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/YrBRYRDN4M5ryrNOND/giphy.gif" height="500px" alt="Original GreenPlasma.exe: Section handle 0x248 left open, direct cause of 0xC0000035 on the next run" />
   </div>
   
   <!-- ===================================================== -->
-  <h2>Second failure: 0xC0000022 (ACCESS DENIED)</h2>
+  <h2>First failure: 0xC0000022 (ACCESS DENIED)</h2>
 
   <p>With the path fixed, the code opens the SYSTEM-owned section and gets a valid handle. But mapping it with <code>FILE_MAP_WRITE</code> fails. <code>GetLastError()</code> returns 5 (<code>ERROR_ACCESS_DENIED</code>, NT status <code>0xC0000022</code>). The code falls back to read-only and dumps the first 256 bytes:</p>
 
@@ -486,7 +475,7 @@ wsprintf(section_path, L"\\Sessions\\%d\\BaseNamedObjects\\CTFMON_DEAD", sesid);
   </div>
 
   <!-- ===================================================== -->
-  <h2>Third problem: The ghost section (0xC0000035)</h2>
+  <h2>Second problem: The ghost section (0xC0000035)</h2>
 
   <p>After an earlier run, <code>NtCreateSymbolicLinkObject</code> returned <code>0xC0000035</code> (STATUS_OBJECT_NAME_COLLISION) on the next attempt. The symlink from the previous run was still alive in the object manager namespace because the process had not properly closed its handle before exiting. The kernel keeps the object alive as long as a handle remains open anywhere.</p>
 
