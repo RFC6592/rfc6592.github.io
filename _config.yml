@@ -10,7 +10,7 @@
 ############################
 
 # Name of website
-title: Im0s - Curious
+title: Sami
 
 # Your name to show in the footer
 author: Im0s
@@ -152,9 +152,8 @@ footer-hover-col: "#33ab1b"
 #site-css:
 #  - "/assets/css/custom-styles.css"
 
-
-custom-css:
-  - "/assets/css/custom.css"
+site-css:
+  - "/css/override.css"
 
 # If you have common JavaScript files that should be included in every page, list them here
 #site-js:
