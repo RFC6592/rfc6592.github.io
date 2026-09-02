@@ -153,6 +153,9 @@ footer-hover-col: "#33ab1b"
 #  - "/assets/css/custom-styles.css"
 
 
+custom-css:
+  - "/assets/css/custom.css"
+
 # If you have common JavaScript files that should be included in every page, list them here
 #site-js:
 #  - "/assets/js/custom-script.js"
