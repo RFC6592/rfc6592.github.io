@@ -5,14 +5,6 @@ layout: null
 @import url("pygment_highlights.css");
 
 /* --- General --- */
-:root {
-  --border: #dddddd;
-  --bg2: #f8f8f8;
-  --bg3: #eeeeee;
-  --border2: #cccccc;
-  --red: #c0392b;
-  --text-dim: #777777;
-}
 
 html {
   font-size: 100%
@@ -189,6 +181,8 @@ img {
 }
 
 .navbar-custom .navbar-nav .nav-link {
+  padding-top: 0;
+  padding-bottom: 0;
   line-height: 1.25rem;
   padding-top: 0.9375rem;
   padding-bottom: 0.9375rem;
@@ -454,7 +448,7 @@ footer .footer-custom-content {
 
 .post-preview {
   padding: 1.25rem 0;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #86aaf9;
   overflow: hidden;
 }
 
@@ -816,7 +810,7 @@ nav.top-nav-short-permanent ~ header > .intro-header.big-img {
   font-weight: 800;
   letter-spacing: 1px;
   padding: 0.625rem 0.3125rem;
-  background-color: #43661e;
+  background-color: #161625;
   border-radius: 0;
   color: {{ site.text-col | default: "#404040" }};
 }
@@ -827,9 +821,9 @@ nav.top-nav-short-permanent ~ header > .intro-header.big-img {
 }
 .pagination .page-item .page-link:hover,
 .pagination .page-item .page-link:focus {
-  color: #FFF;
+  color: #2f3d5c;
   border: 1px solid {{ site.hover-col | default: "#0085A1" }};
-  background-color: {{ site.hover-col | default: "#0085A1" }};
+  background-color: #86aaf9;
 }
 
 /* --- Tables --- */
@@ -838,23 +832,23 @@ table {
   padding: 0;
 }
 table tr {
-  border-top: 1px solid #cccccc;
-  background-color: #ffffff;
+  border-top: 1px solid #3d4a69;
+  background-color: #2f3d5c;
   margin: 0;
   padding: 0;
 }
 table tr:nth-child(2n) {
-  background-color: #f8f8f8;
+  background-color: #2f3d5c;
 }
 table tr th {
   font-weight: bold;
-  border: 1px solid #cccccc;
+  border: 1px solid #3d4a69;
   text-align: left;
   margin: 0;
   padding: 0.375rem 0.8125rem;
 }
 table tr td {
-  border: 1px solid #cccccc;
+  border: 1px solid #3d4a69;
   text-align: left;
   margin: 0;
   padding: 0.375rem 0.8125rem;
@@ -872,8 +866,8 @@ table tr td :last-child {
 
 code {
   padding: 0.125rem 0.25rem;
-  color: #c7254e;
-  background-color: #f9f2f4;
+  color: #c6c9d2;
+  background-color: #2F3D5C;
   border-radius: 0.25rem;
 }
 
@@ -890,8 +884,8 @@ pre {
   padding: 0.59375rem;
 }
 .highlight pre {
-  border: #98FB98;
-  background: rgb(204, 212, 207);
+  border: none;
+  background: #2f3d5c;
   margin: 0;
 }
 .highlight > pre {
@@ -900,7 +894,8 @@ pre {
   background-size: auto 3em;
   background-position-y: 0.625rem;
   border: 1px solid rgba(0,0,0,0.1);
-  border-left: 0.4375rem solid #444;
+  border-left: 0.4375rem solid #86AAF9;
+  color: #c6c9d2;
 }
 .highlight > pre:not([class~="highlight"]) { /* code block with line number */
   padding: 0;
@@ -1123,85 +1118,4 @@ pre {
   #nav-search-text {
     display: inline-block;
   }
-}
-
-
-.container-fluid {
-  max-width: 1400px;
-}
-
-.blog-post img {
-  width: 100%;
-}
-
-/* ── DIAGRAMS ───────────────────────────────────────────────── */
-/* ── DIAGRAM CUSTOM — HORIZONTAL SCROLL ───────────────────────────────────────────────── */
-
-.diagram-custom {
-  margin: 2.5rem 0;
-  border: 1px solid #dddddd;  /* fallback for --border */
-  background: #f8f8f8;        /* fallback for --bg2 */
-  overflow-x: auto;
-  overflow-y: auto;
-  white-space: nowrap;
-  cursor: grab;
-  position: relative;
-}
-
-.diagram-custom:active {
-  cursor: grabbing;
-}
-
-.diagram-custom img {
-  display: block;
-  max-width: none;
-  width: auto;
-  height: auto;
-  min-width: 100%;
-  pointer-events: auto;
-  user-select: none;
-}
-
-.diagram-custom {
-  scroll-behavior: smooth;
-  -webkit-overflow-scrolling: touch;
-}
-
-/* Optional: Custom scrollbar */
-.diagram-custom::-webkit-scrollbar {
-  height: 8px;
-  background: #e0e0e0;
-}
-
-.diagram-custom::-webkit-scrollbar-track {
-  background: #e0e0e0;
-  border-radius: 4px;
-}
-
-.diagram-custom::-webkit-scrollbar-thumb {
-  background: #aaaaaa;
-  border-radius: 4px;
-}
-
-.diagram-custom::-webkit-scrollbar-thumb:hover {
-  background: #0085a1;  /* matches your theme's hover color */
-}
-
-.diagram-title {
-  background: #eeeeee;
-  border-bottom: 1px solid #dddddd;
-  padding: 0.55rem 1.2rem;
-  font-size: 0.68rem;
-  letter-spacing: 2px;
-  color: #777777;
-  text-transform: uppercase;
-  display: flex;
-  align-items: center;
-  gap: 0.55rem;
-}
-
-.diagram-title::before {
-  content: '◆';
-  color: #0085a1;  /* your theme's hover color */ 
-  font-size: 0.55rem;
 }
