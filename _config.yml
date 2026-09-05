@@ -80,7 +80,7 @@ social-network-links:
 
 # If you want your website to generate an RSS feed, provide a description
 # The URL for the feed will be https://<your_website>/feed.xml
-rss-description: Cyber Security
+rss-description: RSS exists!
 
 ###########################
 # --- General options --- #
@@ -101,7 +101,7 @@ url-pretty: "Im0s.com"
 excerpt_length: 50
 
 # Whether or not to show an excerpt for every blog post in the feed page
-feed_show_excerpt: true
+feed_show_excerpt: false
 
 # Whether or not to show a list of tags below each post preview in the feed page
 feed_show_tags: true
@@ -126,17 +126,17 @@ navbar-var-length: false
 
 # Personalize the colours in your website. Colour values can be any valid CSS colour
 
-navbar-col: "#1d1e20"
-navbar-text-col: "#ffffff"
-navbar-border-col: "#DDDDDD"
-page-col: "#1d1e20"
-text-col: "#ffffff"
-link-col: "#008AFF"
-hover-col: "#0085A1"
-footer-col: "#1d1e20"
-footer-text-col: "#777777"
-footer-link-col: "#1f4318"
-footer-hover-col: "#33ab1b"
+page-col: "#161625"
+text-col: "#F6F6F7"
+link-col: "#86AAF9"
+hover-col: "#0F5368"
+navbar-col: "#2F3D5C"
+navbar-text-col: "#CFD2D9"
+navbar-border-col: "#2F3D5C"
+footer-col: "#2F3D5C"
+footer-text-col: "#CFD2D9"
+footer-link-col: "#0F5368"
+footer-hover-col: "#0F5368"
 
 # Alternatively, the navbar, footer, and page background can be set to an image
 # instead of colour
@@ -151,9 +151,6 @@ footer-hover-col: "#33ab1b"
 # For any extra visual customization, you can include additional CSS files in every page on your site. List any custom CSS files here
 #site-css:
 #  - "/assets/css/custom-styles.css"
-
-site-css:
-  - "/css/override.css"
 
 # If you have common JavaScript files that should be included in every page, list them here
 #site-js:
