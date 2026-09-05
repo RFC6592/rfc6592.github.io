@@ -2,7 +2,7 @@
 layout: post
 title: Bypass MyDumbEDR
 subtitle: There's lots to learn!
-tags: [CyberSec]
+tags: ["Offensive", "Windows Security", "Challenge"]
 comments: true
 ---
 

@@ -2,7 +2,7 @@
 layout: post
 title: Simple EDR Principle
 subtitle: There's lots to learn!
-tags: [CyberSec]
+tags: ["Offensive", "Windows Security"]
 comments: true
 ---
 

@@ -2,7 +2,7 @@
 layout: post
 title: Patch AMSI
 subtitle: There's lots to learn!
-tags: [CyberSec]
+tags: ["Offensive", "Windows Security"]
 comments: true
 ---
 

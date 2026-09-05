@@ -2,7 +2,7 @@
 layout: post
 title: Hell's Gate
 subtitle: There's lots to learn!
-tags: [CyberSec]
+tags: ["Offensive", "Maldev"]
 comments: true
 ---
 

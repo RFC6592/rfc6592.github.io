@@ -2,7 +2,7 @@
 layout: post
 title: Golden Ticket Attack
 subtitle: There's lots to learn!
-tags: [CyberSec]
+tags: ["Network Security", "Active Directory"]
 comments: true
 ---
 

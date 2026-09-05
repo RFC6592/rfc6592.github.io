@@ -2,7 +2,7 @@
 layout: post
 title: Méthode d'évasion d’antivirus (AV)
 subtitle: There's lots to learn!
-tags: [CyberSec]
+tags: ["Network Security", "Windows Security"]
 comments: true
 ---
 

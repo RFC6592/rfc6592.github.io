@@ -4,7 +4,7 @@ title: "RedSun: Critical Windows Defender Exploit Leveraging LocalHollowing Obfu
 subtitle: "There's lots to learn!"
 date: 2026-05-12
 full-width: false
-tags: [CyberSec]
+tags: ["Offensive", "Windows Security", "Maldev"]
 ---
 
 # RedSun: Critical Windows Defender Exploit Leveraging LocalHollowing Obfuscation to Achieve Full System Control

@@ -2,7 +2,7 @@
 layout: post
 title: SMB Relay Attack
 subtitle: There's lots to learn!
-tags: [CyberSec]
+tags: ["Network Security", "Windows Security"]
 comments: true
 ---
 
