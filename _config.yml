@@ -51,6 +51,7 @@ round-avatar: true
 # Uncomment the links you want to show and add your information to each one.
 social-network-links:
    email: "contact@im0s.com"
+   linkedin: "https://www.linkedin.com/in/sami-e-6908a727b/"
 #  facebook: deanattali
 #  github: daattali
 #  twitter: daattali
@@ -58,7 +59,6 @@ social-network-links:
 #  youtube: c/daattali
 #  medium: yourname
 #  reddit: yourname
-  linkedin: "https://www.linkedin.com/in/sami-e-6908a727b/"
 #  xing: yourname
 #  stackoverflow: "3943160/daattali"
 #  snapchat: deanat78
