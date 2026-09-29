@@ -4,6 +4,7 @@ title: Direct System Call - SysWhispers
 subtitle: There's lots to learn!
 tags: ["Offensive", "Maldev"]
 comments: true
+author: "Sami Ezzayri"
 ---
 
 
