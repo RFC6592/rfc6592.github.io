@@ -3,6 +3,7 @@ layout: post
 title: LLMNR & NBT-NS Poisoning
 subtitle: There's lots to learn!
 tags: ["Network Security", "Active Directory"]
+author: "Sami Ezzayri"
 comments: true
 ---
 
