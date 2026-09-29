@@ -3,6 +3,7 @@ layout: page
 title: About me
 ---
 
+![Your Name](../assets/img/Blog_Banner.png)
 # Sami Ezzayri
 
 I’m a cybersecurity professional focused on **penetration testing, web application security, vulnerability research, threat hunting, and security monitoring**.
