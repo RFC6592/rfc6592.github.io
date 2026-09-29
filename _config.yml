@@ -15,6 +15,11 @@ title: Im0s
 # Your name to show in the footer
 author: Im0s | Sami Ezzayri
 
+# Short description for search engines and social sharing
+description: "Sami Ezzayri is a Cyber Security Consultant and Penetration Tester focused on Web & API Security, Red Teaming, Vulnerability Research."
+
+# SEO keywords
+keywords: "Sami Ezzayri, Im0s, RFC6592, penetration tester, cyber security consultant, web security, API security, vulnerability research, offensive security, red teaming"
 ###############################################
 # --- List of links in the navigation bar --- #
 ###############################################
