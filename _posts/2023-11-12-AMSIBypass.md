@@ -4,6 +4,7 @@ title: Patch AMSI
 subtitle: There's lots to learn!
 tags: ["Offensive", "Windows Security"]
 comments: true
+author: "Sami Ezzayri"
 ---
 
 ## Qu'est-ce que AMSI ?
