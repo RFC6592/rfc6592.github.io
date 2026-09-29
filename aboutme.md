@@ -3,7 +3,7 @@ layout: page
 title: About me
 ---
 
-![Your Name](../assets/img/Blog_Banner.png)
+![Alt text](https://rfc6592.github.io/assets/img/blog_banner.png)
 # Sami Ezzayri
 
 I’m a cybersecurity professional focused on **penetration testing, web application security, vulnerability research, threat hunting, and security monitoring**.
