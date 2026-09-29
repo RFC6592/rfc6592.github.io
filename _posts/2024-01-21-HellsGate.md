@@ -4,6 +4,7 @@ title: Hell's Gate
 subtitle: There's lots to learn!
 tags: ["Offensive", "Maldev"]
 comments: true
+author: "Sami Ezzayri"
 ---
 
 ## What is Hell's Gate ?
