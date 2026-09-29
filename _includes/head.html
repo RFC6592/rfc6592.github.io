@@ -1,3 +1,51 @@
+{% if page.layout == "post" %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": {{ page.title | jsonify }},
+  "description": {{ page.subtitle | default: site.description | jsonify }},
+  "datePublished": "{{ page.date | date_to_xmlschema }}",
+  "dateModified": "{{ page.last_modified_at | default: page.date | date_to_xmlschema }}",
+  "author": {
+    "@type": "Person",
+    "name": "Sami Ezzayri",
+    "url": "https://im0s.com/aboutme"
+  },
+  "publisher": {
+    "@type": "Person",
+    "name": "Sami Ezzayri",
+    "url": "https://im0s.com/aboutme"
+  },
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "{{ page.url | absolute_url }}"
+  }
+}
+</script>
+{% else %}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ProfilePage",
+  "mainEntity": {
+    "@type": "Person",
+    "name": "Sami Ezzayri",
+    "alternateName": [
+      "im0s",
+      "RFC6592"
+    ],
+    "url": "https://im0s.com/aboutme",
+    "jobTitle": "Cyber Security Consultant & Penetration Tester",
+    "sameAs": [
+      "https://github.com/RFC6592",
+      "https://www.linkedin.com/in/sami-ezzayri-6abtalsa"
+    ]
+  }
+}
+</script>
+{% endif %}
+
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
