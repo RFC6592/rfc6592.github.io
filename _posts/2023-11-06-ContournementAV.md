@@ -4,6 +4,7 @@ title: Méthode d'évasion d’antivirus (AV)
 subtitle: There's lots to learn!
 tags: ["Network Security", "Windows Security"]
 comments: true
+author: "Sami Ezzayri"
 ---
 
 ## Introduction
