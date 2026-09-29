@@ -4,6 +4,7 @@ title: Simple EDR Principle
 subtitle: There's lots to learn!
 tags: ["Offensive", "Windows Security"]
 comments: true
+author: "Sami Ezzayri"
 ---
 
 ## How EDR works ? 
