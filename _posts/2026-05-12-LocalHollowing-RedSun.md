@@ -5,6 +5,7 @@ subtitle: "There's lots to learn!"
 date: 2026-05-12
 full-width: false
 tags: ["Offensive", "Windows Security", "Maldev"]
+author: "Sami Ezzayri"
 ---
 
 # RedSun: Critical Windows Defender Exploit Leveraging LocalHollowing Obfuscation to Achieve Full System Control
