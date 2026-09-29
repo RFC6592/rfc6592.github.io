@@ -4,6 +4,7 @@ title: Bypass MyDumbEDR
 subtitle: There's lots to learn!
 tags: ["Offensive", "Windows Security", "Challenge"]
 comments: true
+author: "Sami Ezzayri"
 ---
 
 
