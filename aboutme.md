@@ -23,7 +23,7 @@ My areas of interest include:
 
 * **Website:** https://im0s.com
 * **GitHub:** https://github.com/RFC6592
-* **LinkedIn:** www.linkedin.com/in/sami-ezzayri-6abtalsa
+* **LinkedIn:** www.linkedin.com/in/sami-ezzayri
 
 For professional inquiries, research discussions, or collaboration:
 
