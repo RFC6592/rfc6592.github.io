@@ -4,6 +4,7 @@ title: Golden Ticket Attack
 subtitle: There's lots to learn!
 tags: ["Network Security", "Active Directory"]
 comments: true
+author: Sami Ezzayri
 ---
 
 ## Introduction
@@ -44,5 +45,6 @@ misc::cmd
 ## Sources
 
 * (ManageEngine, 2023) https://www.manageengine.com/log-management/cyber-security/golden-ticket-attack.html<br/>
+* (HEPL) https://biblio-hepl.be/pmb/opac_css/index.php?lvl=notice_display&id=121166
 * (AdSecurity, 2023) https://adsecurity.org/?p=1515<br/>
 * (Practical Network Penetration Tester (PNPT), 2023) https://academy.tcm-sec.com/p/practical-ethical-hacking-the-complete-course<br>
